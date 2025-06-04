@@ -1,0 +1,19 @@
+<%- include('../partials/header', { title: 'Restablecer Contraseña' }) %>
+    <div class="auth-container">
+        <h2>Restablecer Contraseña</h2>
+        <% if (error) { %>
+            <div class="alert error"><%= error %></div>
+        <% } %>
+        <% if (message) { %>
+            <div class="alert success"><%= message %></div>
+        <% } %>
+        <form action="/reset" method="POST">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <button type="submit" class="btn">Enviar Instrucciones</button>
+        </form>
+        <p><a href="/login">Volver al inicio de sesión</a></p>
+    </div>
+<%- include('../partials/footer') %>
