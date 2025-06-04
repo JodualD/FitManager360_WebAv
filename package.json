@@ -1,0 +1,33 @@
+{
+  "name": "fitmanager360_webav",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JodualD/FitManager360_WebAv.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JodualD/FitManager360_WebAv/issues"
+  },
+  "homepage": "https://github.com/JodualD/FitManager360_WebAv#readme",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "method-override": "^3.0.0",
+    "mongoose": "^8.15.1",
+    "nodemailer": "^7.0.3",
+    "socket.io": "^4.8.1"
+  }
+}

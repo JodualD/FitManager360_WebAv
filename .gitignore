@@ -1,0 +1,44 @@
+# Archivos de entorno (nunca subir credenciales)
+.env
+.env.local
+.env.development
+.env.test
+
+# Dependencias de Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor/IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Archivos de producción/compilación
+dist/
+build/
+coverage/
+
+# MongoDB local
+/data/db/
+*.mongod
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Backup files
+*.bak
