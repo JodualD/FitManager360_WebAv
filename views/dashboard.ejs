@@ -1,0 +1,36 @@
+<%- include('partials/header', { title: 'Dashboard' }) %>
+<div class="dashboard">
+  <h2>Bienvenido, <%= user.name %></h2>
+
+  <div class="stats">
+    <div class="stat-card">
+      <h3>Tus Rutinas</h3>
+      <p>5</p>
+      <!-- Esto debería ser dinámico -->
+      <a
+        href="/routines"
+        class="btn"
+        >Ver todas</a
+      >
+    </div>
+
+    <div class="stat-card">
+      <h3>Progreso</h3>
+      <p>Último peso: <%= user.weight || 'No registrado' %> kg</p>
+      <a
+        href="#"
+        class="btn"
+        >Actualizar</a
+      >
+    </div>
+  </div>
+
+  <div class="recent-activities">
+    <h3>Actividades Recientes</h3>
+    <ul>
+      <li>Rutina "Piernas" completada - Hoy</li>
+      <li>Nueva rutina "Brazos" creada - Ayer</li>
+    </ul>
+  </div>
+</div>
+<%- include('partials/footer') %>
