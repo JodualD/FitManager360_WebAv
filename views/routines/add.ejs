@@ -1,0 +1,113 @@
+<%- include('../partials/header', { title: 'Nueva Rutina' }) %>
+<div class="container">
+  <h2>Crear Nueva Rutina</h2>
+
+  <% if (error) { %>
+  <div class="alert error"><%= error %></div>
+  <% } %>
+
+  <form
+    action="/routines"
+    method="POST"
+  >
+    <div class="form-group">
+      <label for="title">Título:</label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        value="<%= title || '' %>"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="description">Descripción:</label>
+      <textarea
+        id="description"
+        name="description"
+        required
+      >
+<%= description || '' %></textarea
+      >
+    </div>
+
+    <h3>Ejercicios</h3>
+    <div id="exercises-container">
+      <div class="exercise-form">
+        <div class="form-group">
+          <label>Nombre:</label>
+          <input
+            type="text"
+            name="exercises[name][]"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label>Series:</label>
+          <input
+            type="number"
+            name="exercises[sets][]"
+            min="1"
+            value="3"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label>Repeticiones:</label>
+          <input
+            type="number"
+            name="exercises[reps][]"
+            min="1"
+            value="10"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label>Descanso (seg):</label>
+          <input
+            type="number"
+            name="exercises[rest][]"
+            min="0"
+            value="60"
+          />
+        </div>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      id="add-exercise"
+      class="btn secondary"
+    >
+      Añadir Ejercicio
+    </button>
+    <button
+      type="submit"
+      class="btn"
+    >
+      Guardar Rutina
+    </button>
+  </form>
+</div>
+
+<script>
+  document
+    .getElementById('add-exercise')
+    .addEventListener('click', function () {
+      const container = document.getElementById('exercises-container');
+      const newExercise = document
+        .querySelector('.exercise-form')
+        .cloneNode(true);
+
+      // Limpiar los valores del nuevo ejercicio
+      Array.from(newExercise.querySelectorAll('input')).forEach((input) => {
+        if (input.type !== 'number') {
+          input.value = '';
+        }
+      });
+
+      container.appendChild(newExercise);
+    });
+</script>
+<%- include('../partials/footer') %>
