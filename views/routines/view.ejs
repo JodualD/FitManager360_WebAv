@@ -1,0 +1,42 @@
+<%- include('../partials/header', { title: routine.title }) %>
+<div class="container">
+  <div class="routine-header">
+    <h2><%= routine.title %></h2>
+    <div class="actions">
+      <a
+        href="/routines/<%= routine._id %>/edit"
+        class="btn"
+        >Editar</a
+      >
+      <form
+        action="/routines/<%= routine._id %>?_method=DELETE"
+        method="POST"
+      >
+        <button
+          type="submit"
+          class="btn danger"
+        >
+          Eliminar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <p><%= routine.description %></p>
+  <p>Dificultad: <%= routine.difficulty %></p>
+
+  <h3>Ejercicios</h3>
+  <div class="exercises-list">
+    <% routine.exercises.forEach(exercise => { %>
+    <div class="exercise-card">
+      <h4><%= exercise.name %></h4>
+      <p>Series: <%= exercise.sets %></p>
+      <p>Repeticiones: <%= exercise.reps %></p>
+      <% if (exercise.rest) { %>
+      <p>Descanso: <%= exercise.rest %> segundos</p>
+      <% } %>
+    </div>
+    <% }) %>
+  </div>
+</div>
+<%- include('../partials/footer') %>
