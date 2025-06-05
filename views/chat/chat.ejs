@@ -1,0 +1,40 @@
+<%- include('../partials/header', { title: 'Chat' }) %>
+    <!-- Añadir meta tag con el ID del usuario actual -->
+    <meta name="user-id" content="<%= currentUser._id %>">
+    
+    <div class="container chat-container">
+        <div class="users-list">
+            <h3>Usuarios</h3>
+            <ul>
+                <% users.forEach(user => { %>
+                    <li>
+                        <a href="#" class="start-chat" data-userid="<%= user._id %>" data-username="<%= user.name %>">
+                            <%= user.name %>
+                        </a>
+                    </li>
+                <% }) %>
+            </ul>
+        </div>
+        
+        <div class="chat-area">
+            <div class="chat-header">
+                <h3 id="chat-with">Selecciona un usuario para chatear</h3>
+            </div>
+            
+            <div class="messages" id="messages">
+                <!-- Los mensajes se cargarán aquí -->
+            </div>
+            
+            <div class="message-form">
+                <form id="message-form">
+                    <input type="hidden" id="receiver-id">
+                    <input type="text" id="message-input" placeholder="Escribe un mensaje..." required>
+                    <button type="submit" class="btn">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/chat.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+<%- include('../partials/footer') %>
