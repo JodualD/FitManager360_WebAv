@@ -1,0 +1,49 @@
+<%- include('../partials/header', { title: 'Mis Rutinas' }) %>
+<div class="container">
+  <div class="header-actions">
+    <h2>Mis Rutinas</h2>
+    <a
+      href="/routines/new"
+      class="btn"
+      >Nueva Rutina</a
+    >
+  </div>
+
+  <% if (routines.length === 0) { %>
+  <p>No tienes rutinas creadas. <a href="/routines/new">Crea una ahora</a></p>
+  <% } else { %>
+  <div class="routine-list">
+    <% routines.forEach(routine => { %>
+    <div class="routine-card">
+      <h3><%= routine.title %></h3>
+      <p><%= routine.description %></p>
+      <p>Dificultad: <%= routine.difficulty %></p>
+      <div class="actions">
+        <a
+          href="/routines/<%= routine._id %>"
+          class="btn"
+          >Ver</a
+        >
+        <a
+          href="/routines/<%= routine._id %>/edit"
+          class="btn"
+          >Editar</a
+        >
+        <form
+          action="/routines/<%= routine._id %>?_method=DELETE"
+          method="POST"
+        >
+          <button
+            type="submit"
+            class="btn danger"
+          >
+            Eliminar
+          </button>
+        </form>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>
