@@ -1,21 +1,55 @@
 <%- include('../partials/header', { title: 'Iniciar Sesión' }) %>
-    <div class="auth-container">
-        <h2>Iniciar Sesión</h2>
+<div class="auth-container">
+    <div class="auth-card fade-in">
+        <div class="auth-header">
+            <div class="logo">
+                <div class="logo-icon">FM</div>
+            </div>
+            <h2 class="auth-title">¡Bienvenido!</h2>
+            <p class="auth-subtitle">Inicia sesión en tu cuenta para continuar</p>
+        </div>
+        
         <% if (error) { %>
-            <div class="alert error"><%= error %></div>
+            <div class="alert alert-error" id="login-error">
+                <span>⚠️</span>
+                <%= error %>
+            </div>
         <% } %>
-        <form action="/login" method="POST">
+        
+        <form action="/login" method="POST" id="login-form">
             <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <label for="email" class="form-label">Correo electrónico</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="form-control" 
+                    placeholder="tu@email.com"
+                    required
+                >
             </div>
+            
             <div class="form-group">
-                <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password" required>
+                <label for="password" class="form-label">Contraseña</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-control" 
+                    placeholder="••••••••"
+                    required
+                >
             </div>
-            <button type="submit" class="btn">Iniciar Sesión</button>
+            
+            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;" id="login-submit">
+                Iniciar Sesión
+            </button>
         </form>
-        <p>¿No tienes cuenta? <a href="/signup">Regístrate aquí</a></p>
-        <p><a href="/reset">¿Olvidaste tu contraseña?</a></p>
+        
+        <div class="auth-footer">
+            <p>¿No tienes cuenta? <a href="/signup" class="auth-link">Regístrate aquí</a></p>
+            <p><a href="/reset" class="auth-link">¿Olvidaste tu contraseña?</a></p>
+        </div>
     </div>
+</div>
 <%- include('../partials/footer') %>

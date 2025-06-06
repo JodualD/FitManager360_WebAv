@@ -1,113 +1,317 @@
 <%- include('../partials/header', { title: 'Nueva Rutina' }) %>
-<div class="container">
-  <h2>Crear Nueva Rutina</h2>
-
-  <% if (error) { %>
-  <div class="alert error"><%= error %></div>
-  <% } %>
-
-  <form
-    action="/routines"
-    method="POST"
-  >
-    <div class="form-group">
-      <label for="title">Título:</label>
-      <input
-        type="text"
-        id="title"
-        name="title"
-        value="<%= title || '' %>"
-        required
-      />
+<div class="container fade-in">
+    <div class="routine-header">
+        <div>
+            <h1 class="routine-title">➕ Crear Nueva Rutina</h1>
+            <p class="text-secondary">Diseña tu entrenamiento personalizado</p>
+        </div>
+        <a href="/routines" class="btn btn-success" id="back-to-routines">
+            ← Volver a Rutinas
+        </a>
     </div>
 
-    <div class="form-group">
-      <label for="description">Descripción:</label>
-      <textarea
-        id="description"
-        name="description"
-        required
-      >
-<%= description || '' %></textarea
-      >
+    <% if (error) { %>
+    <div class="alert alert-error" id="form-error">
+        <span>⚠️</span>
+        <%= error %>
     </div>
+    <% } %>
 
-    <h3>Ejercicios</h3>
-    <div id="exercises-container">
-      <div class="exercise-form">
-        <div class="form-group">
-          <label>Nombre:</label>
-          <input
-            type="text"
-            name="exercises[name][]"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label>Series:</label>
-          <input
-            type="number"
-            name="exercises[sets][]"
-            min="1"
-            value="3"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label>Repeticiones:</label>
-          <input
-            type="number"
-            name="exercises[reps][]"
-            min="1"
-            value="10"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label>Descanso (seg):</label>
-          <input
-            type="number"
-            name="exercises[rest][]"
-            min="0"
-            value="60"
-          />
-        </div>
-      </div>
-    </div>
+    <form action="/routines" method="POST" id="routine-form">
+        <div class="grid grid-cols-1 gap-lg">
+            <!-- Información básica -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-xl font-semibold">📋 Información Básica</h3>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-cols-1 gap-lg">
+                        <div class="form-group">
+                            <label for="title" class="form-label">Título de la rutina</label>
+                            <input 
+                                type="text" 
+                                id="title" 
+                                name="title" 
+                                class="form-control" 
+                                placeholder="Ej: Rutina de Piernas Avanzada"
+                                value="<%= title || '' %>" 
+                                required
+                            >
+                        </div>
 
-    <button
-      type="button"
-      id="add-exercise"
-      class="btn secondary"
-    >
-      Añadir Ejercicio
-    </button>
-    <button
-      type="submit"
-      class="btn"
-    >
-      Guardar Rutina
-    </button>
-  </form>
+                        <div class="form-group">
+                            <label for="description" class="form-label">Descripción</label>
+                            <textarea 
+                                id="description" 
+                                name="description" 
+                                class="form-control form-textarea" 
+                                placeholder="Describe los objetivos y características de esta rutina..."
+                                required
+                            ><%= description || '' %></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="difficulty" class="form-label">Nivel de dificultad</label>
+                            <select id="difficulty" name="difficulty" class="form-control form-select">
+                                <option value="Beginner">🟢 Principiante</option>
+                                <option value="Intermediate" selected>🟡 Intermedio</option>
+                                <option value="Advanced">🔴 Avanzado</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ejercicios -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-semibold">🏋️‍♂️ Ejercicios</h3>
+                        <button type="button" id="add-exercise-btn" class="btn btn-success btn-sm">
+                            Añadir Ejercicio
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="exercises-container">
+                        <!-- El primer ejercicio se carga por defecto -->
+                        <div class="exercise-form slide-up">
+                            <div class="exercise-form-header">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-semibold">Ejercicio #1</h4>
+                                    <button type="button" class="btn btn-danger btn-sm remove-exercise-btn" style="display: none;">
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="exercise-form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Nombre del ejercicio</label>
+                                    <input 
+                                        type="text" 
+                                        name="exercises[name][]" 
+                                        class="form-control" 
+                                        placeholder="Ej: Sentadillas con barra"
+                                        required
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Series</label>
+                                    <input 
+                                        type="number" 
+                                        name="exercises[sets][]" 
+                                        class="form-control" 
+                                        min="1" 
+                                        value="3" 
+                                        required
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Repeticiones</label>
+                                    <input 
+                                        type="number" 
+                                        name="exercises[reps][]" 
+                                        class="form-control" 
+                                        min="1" 
+                                        value="10" 
+                                        required
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Descanso (seg)</label>
+                                    <input 
+                                        type="number" 
+                                        name="exercises[rest][]" 
+                                        class="form-control" 
+                                        min="0" 
+                                        value="60"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-lg text-center" id="exercise-summary">
+                        <div class="grid grid-cols-3 gap-md">
+                            <div class="stat-card">
+                                <div class="stat-value" id="total-exercises">1</div>
+                                <div class="stat-label">Ejercicios</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="total-sets">3</div>
+                                <div class="stat-label">Series Totales</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="estimated-time">3</div>
+                                <div class="stat-label">Min. Estimados</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="flex justify-between items-center">
+                        <a href="/routines" class="btn btn-danger">
+                            ← Cancelar
+                        </a>
+                        <div class="flex gap-md">
+                            <button type="submit" class="btn btn-primary btn-lg" id="save-routine-btn">
+                                💾 Guardar Rutina
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 
 <script>
-  document
-    .getElementById('add-exercise')
-    .addEventListener('click', function () {
-      const container = document.getElementById('exercises-container');
-      const newExercise = document
-        .querySelector('.exercise-form')
-        .cloneNode(true);
+document.addEventListener('DOMContentLoaded', function() {
+    // Marcar navegación activa
+    const navRoutines = document.getElementById('nav-routines');
+    if (navRoutines) {
+        navRoutines.classList.add('active');
+    }
 
-      // Limpiar los valores del nuevo ejercicio
-      Array.from(newExercise.querySelectorAll('input')).forEach((input) => {
-        if (input.type !== 'number') {
-          input.value = '';
-        }
-      });
+    let exerciseCount = 1;
 
-      container.appendChild(newExercise);
+    // Función para actualizar numeración de ejercicios
+    function updateExerciseNumbers() {
+        const exercises = document.querySelectorAll('.exercise-form');
+        exercises.forEach((exercise, index) => {
+            const header = exercise.querySelector('h4');
+            header.textContent = `Ejercicio #${index + 1}`;
+            
+            // Mostrar/ocultar botón de eliminar
+            const removeBtn = exercise.querySelector('.remove-exercise-btn');
+            if (exercises.length > 1) {
+                removeBtn.style.display = 'inline-flex';
+            } else {
+                removeBtn.style.display = 'none';
+            }
+        });
+        exerciseCount = exercises.length;
+        updateSummary();
+    }
+
+    // Función para actualizar resumen
+    function updateSummary() {
+        const exercises = document.querySelectorAll('.exercise-form');
+        let totalSets = 0;
+        let totalTime = 0;
+
+        exercises.forEach(exercise => {
+            const sets = parseInt(exercise.querySelector('input[name="exercises[sets][]"]').value) || 0;
+            const rest = parseInt(exercise.querySelector('input[name="exercises[rest][]"]').value) || 0;
+            totalSets += sets;
+            totalTime += (sets * rest) / 60; // Estimación básica
+        });
+
+        document.getElementById('total-exercises').textContent = exercises.length;
+        document.getElementById('total-sets').textContent = totalSets;
+        document.getElementById('estimated-time').textContent = Math.round(totalTime);
+    }
+
+    // Añadir nuevo ejercicio
+    document.getElementById('add-exercise-btn').addEventListener('click', function() {
+        exerciseCount++;
+        const container = document.getElementById('exercises-container');
+        const newExercise = document.querySelector('.exercise-form').cloneNode(true);
+
+        // Limpiar valores
+        newExercise.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+        newExercise.querySelectorAll('input[type="number"]').forEach(input => {
+            if (input.name.includes('sets')) input.value = '3';
+            else if (input.name.includes('reps')) input.value = '10';
+            else if (input.name.includes('rest')) input.value = '60';
+        });
+
+        // Añadir animación
+        newExercise.classList.add('slide-up');
+        container.appendChild(newExercise);
+
+        updateExerciseNumbers();
     });
+
+    // Eliminar ejercicio
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-exercise-btn') || e.target.closest('.remove-exercise-btn')) {
+            const exerciseForm = e.target.closest('.exercise-form');
+            if (document.querySelectorAll('.exercise-form').length > 1) {
+                exerciseForm.remove();
+                updateExerciseNumbers();
+            }
+        }
+    });
+
+    // Actualizar resumen cuando cambien los valores
+    document.addEventListener('input', function(e) {
+        if (e.target.name && e.target.name.includes('exercises[')) {
+            updateSummary();
+        }
+    });
+
+    // Vista previa
+    document.getElementById('preview-btn').addEventListener('click', function() {
+        const title = document.getElementById('title').value;
+        const description = document.getElementById('description').value;
+        const exercises = Array.from(document.querySelectorAll('.exercise-form')).map((form, index) => {
+            return {
+                name: form.querySelector('input[name="exercises[name][]"]').value,
+                sets: form.querySelector('input[name="exercises[sets][]"]').value,
+                reps: form.querySelector('input[name="exercises[reps][]"]').value,
+                rest: form.querySelector('input[name="exercises[rest][]"]').value
+            };
+        });
+
+        let preview = `📋 VISTA PREVIA DE LA RUTINA\n\n`;
+        preview += `Título: ${title}\n`;
+        preview += `Descripción: ${description}\n\n`;
+        preview += `Ejercicios:\n`;
+        
+        exercises.forEach((ex, i) => {
+            if (ex.name) {
+                preview += `${i + 1}. ${ex.name} - ${ex.sets} series x ${ex.reps} reps`;
+                if (ex.rest) preview += ` (${ex.rest}s descanso)`;
+                preview += `\n`;
+            }
+        });
+
+        alert(preview);
+    });
+
+    // Validación del formulario
+    document.getElementById('routine-form').addEventListener('submit', function(e) {
+        const exercises = document.querySelectorAll('input[name="exercises[name][]"]');
+        let hasEmptyExercise = false;
+
+        exercises.forEach(input => {
+            if (!input.value.trim()) {
+                hasEmptyExercise = true;
+                input.style.borderColor = 'var(--danger-color)';
+            } else {
+                input.style.borderColor = 'var(--border-color)';
+            }
+        });
+
+        if (hasEmptyExercise) {
+            e.preventDefault();
+            alert('⚠️ Por favor, completa el nombre de todos los ejercicios.');
+            return;
+        }
+
+        // Mostrar loading en el botón
+        const submitBtn = document.getElementById('save-routine-btn');
+        submitBtn.innerHTML = '<div class="spinner"></div> Guardando...';
+        submitBtn.disabled = true;
+    });
+
+    // Inicializar resumen
+    updateSummary();
+});
 </script>
 <%- include('../partials/footer') %>

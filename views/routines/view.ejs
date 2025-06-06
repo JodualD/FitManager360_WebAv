@@ -1,42 +1,336 @@
 <%- include('../partials/header', { title: routine.title }) %>
-<div class="container">
-  <div class="routine-header">
-    <h2><%= routine.title %></h2>
-    <div class="actions">
-      <a
-        href="/routines/<%= routine._id %>/edit"
-        class="btn"
-        >Editar</a
-      >
-      <form
-        action="/routines/<%= routine._id %>?_method=DELETE"
-        method="POST"
-      >
-        <button
-          type="submit"
-          class="btn danger"
-        >
-          Eliminar
-        </button>
-      </form>
-    </div>
-  </div>
+    <div class="container fade-in">
+        <div class="routine-header">
+            <div>
+                <h1 class="routine-title">
+                    <%= routine.title %>
+                </h1>
+                <div class="flex items-center gap-md mt-sm">
+                    <span class="badge badge-primary">🎯 <%= routine.difficulty %></span>
+                    <span class="badge badge-secondary">📅 <%= new Date(routine.createdAt).toLocaleDateString() %>
+                    </span>
+                    <span class="badge badge-success">💪 <%= routine.exercises.length %> Ejercicios</span>
+                </div>
+            </div>
+            <div class="flex gap-md items-center">
+                <a href="/routines/<%= routine._id %>/edit" class="btn btn-success" id="edit-routine-btn">
+                    Editar
+                </a>
+                <form action="/routines/<%= routine._id %>?_method=DELETE" method="POST" class="m-0 p-0">
+                    <!-- Reset de márgenes -->
+                    <button type="submit" class="btn btn-danger m-0" onclick="return confirm('¿Estás seguro?')">
+                        Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
 
-  <p><%= routine.description %></p>
-  <p>Dificultad: <%= routine.difficulty %></p>
+        <div class="grid grid-cols-1 gap-lg">
+            <!-- Información de la rutina -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-xl font-semibold">📋 Descripción</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-base">
+                        <%= routine.description %>
+                    </p>
 
-  <h3>Ejercicios</h3>
-  <div class="exercises-list">
-    <% routine.exercises.forEach(exercise => { %>
-    <div class="exercise-card">
-      <h4><%= exercise.name %></h4>
-      <p>Series: <%= exercise.sets %></p>
-      <p>Repeticiones: <%= exercise.reps %></p>
-      <% if (exercise.rest) { %>
-      <p>Descanso: <%= exercise.rest %> segundos</p>
-      <% } %>
+                    <div class="grid grid-cols-3 gap-lg mt-lg">
+                        <div class="stat-card">
+                            <div class="stat-icon primary">💪</div>
+                            <div class="stat-value">
+                                <%= routine.exercises.length %>
+                            </div>
+                            <div class="stat-label">Ejercicios</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon success">📊</div>
+                            <div class="stat-value">
+                                <%= routine.exercises.reduce((total, ex)=> total + (ex.sets || 0), 0) %>
+                            </div>
+                            <div class="stat-label">Series Totales</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon warning">⏱️</div>
+                            <div class="stat-value">
+                                <%= Math.round(routine.exercises.reduce((total, ex)=> total + ((ex.rest || 0) * (ex.sets
+                                    || 0)), 0) / 60) %>
+                            </div>
+                            <div class="stat-label">Minutos Aprox.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de ejercicios -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-xl font-semibold">🏋️‍♂️ Ejercicios</h3>
+                </div>
+                <div class="card-body">
+                    <div class="exercise-list" id="exercises-container">
+                        <% routine.exercises.forEach((exercise, index)=> { %>
+                            <div class="exercise-card slide-up" style="animation-delay: <%= index * 0.1 %>s;"
+                                data-exercise-index="<%= index %>">
+                                <div class="flex justify-between items-start mb-md">
+                                    <h4 class="exercise-name">
+                                        <span class="exercise-number">#<%= index + 1 %></span>
+                                        <%= exercise.name %>
+                                    </h4>
+                                    <div class="exercise-badge">
+                                        💪
+                                    </div>
+                                </div>
+
+                                <div class="exercise-details">
+                                    <div class="exercise-detail">
+                                        <div class="exercise-detail-value">
+                                            <%= exercise.sets %>
+                                        </div>
+                                        <div class="exercise-detail-label">Series</div>
+                                    </div>
+                                    <div class="exercise-detail">
+                                        <div class="exercise-detail-value">
+                                            <%= exercise.reps %>
+                                        </div>
+                                        <div class="exercise-detail-label">Repeticiones</div>
+                                    </div>
+                                    <% if (exercise.rest) { %>
+                                        <div class="exercise-detail">
+                                            <div class="exercise-detail-value">
+                                                <%= exercise.rest %>s
+                                            </div>
+                                            <div class="exercise-detail-label">Descanso</div>
+                                        </div>
+                                        <% } %>
+                                </div>
+
+                                <div class="exercise-progress mt-md">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 0%"></div>
+                                    </div>
+                                    <button class="btn btn-sm btn-success mt-sm exercise-complete-btn"
+                                        data-exercise="<%= index %>">
+                                        ✅ Marcar como completado
+                                    </button>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="flex justify-between items-center">
+                        <div class="workout-progress">
+                            <span class="text-sm text-secondary">Progreso del entrenamiento:</span>
+                            <div class="progress-bar mt-sm">
+                                <div class="progress-fill" id="overall-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="start-workout-btn">
+                            🚀 Iniciar Entrenamiento
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones adicionales -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-xl font-semibold">⚡ Acciones</h3>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-cols-2 gap-md">
+                        <a href="/routines" class="btn btn-success">
+                            ← Volver a Rutinas
+                        </a>
+                        <button class="btn btn-warning" id="share-routine-btn">
+                            📤 Compartir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <% }) %>
-  </div>
-</div>
-<%- include('../partials/footer') %>
+
+    <style>
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-primary {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+        }
+
+        .badge-secondary {
+            background: rgba(100, 116, 139, 0.1);
+            color: var(--text-secondary);
+        }
+
+        .badge-success {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+        }
+
+        .exercise-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .exercise-badge {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-tertiary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color), var(--primary-color));
+            transition: width 0.3s ease;
+        }
+
+        .exercise-progress {
+            border-top: 1px solid var(--border-light);
+            padding-top: var(--spacing-md);
+        }
+
+        .exercise-card.completed {
+            opacity: 0.7;
+            background: var(--bg-tertiary);
+        }
+
+        .exercise-card.completed .exercise-name {
+            text-decoration: line-through;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Marcar navegación activa
+            const navRoutines = document.getElementById('nav-routines');
+            if (navRoutines) {
+                navRoutines.classList.add('active');
+            }
+
+            let completedExercises = 0;
+            const totalExercises = <%= routine.exercises.length %>;
+
+            // Manejar completar ejercicios
+            const completeButtons = document.querySelectorAll('.exercise-complete-btn');
+            completeButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const exerciseIndex = this.getAttribute('data-exercise');
+                    const exerciseCard = this.closest('.exercise-card');
+
+                    if (exerciseCard.classList.contains('completed')) {
+                        // Desmarcar
+                        exerciseCard.classList.remove('completed');
+                        this.textContent = '✅ Marcar como completado';
+                        this.classList.remove('btn-secondary');
+                        this.classList.add('btn-success');
+                        completedExercises--;
+                    } else {
+                        // Marcar como completado
+                        exerciseCard.classList.add('completed');
+                        this.textContent = '✓ Completado';
+                        this.classList.remove('btn-success');
+                        this.classList.add('btn-secondary');
+                        completedExercises++;
+                    }
+
+                    // Actualizar progreso general
+                    const progressPercentage = (completedExercises / totalExercises) * 100;
+                    document.getElementById('overall-progress').style.width = progressPercentage + '%';
+
+                    // Actualizar progreso del ejercicio individual
+                    const exerciseProgress = exerciseCard.querySelector('.progress-fill');
+                    exerciseProgress.style.width = exerciseCard.classList.contains('completed') ? '100%' : '0%';
+                });
+            });
+
+            // Iniciar entrenamiento
+            const startWorkoutBtn = document.getElementById('start-workout-btn');
+            if (startWorkoutBtn) {
+                startWorkoutBtn.addEventListener('click', function () {
+                    if (confirm('🚀 ¿Estás listo para comenzar tu entrenamiento?')) {
+                        alert('¡Entrenamiento iniciado! Ve completando cada ejercicio.');
+                        // Aquí se podría implementar un timer o cronómetro
+                    }
+                });
+            }
+
+            // Duplicar rutina
+            const duplicateBtn = document.getElementById('duplicate-routine-btn');
+            if (duplicateBtn) {
+                duplicateBtn.addEventListener('click', function () {
+                    alert('Función de duplicar rutina en desarrollo');
+                });
+            }
+
+            // Compartir rutina
+            const shareBtn = document.getElementById('share-routine-btn');
+            if (shareBtn) {
+                shareBtn.addEventListener('click', function () {
+                    if (navigator.share) {
+                        navigator.share({
+                            title: '<%= routine.title %>',
+                            text: '<%= routine.description %>',
+                            url: window.location.href
+                        });
+                    } else {
+                        // Fallback para navegadores que no soportan Web Share API
+                        navigator.clipboard.writeText(window.location.href);
+                        alert('📋 Enlace copiado al portapapeles');
+                    }
+                });
+            }
+
+            // Exportar rutina
+            const exportBtn = document.getElementById('export-routine-btn');
+            if (exportBtn) {
+                exportBtn.addEventListener('click', function () {
+                    alert('Función de exportar rutina en desarrollo');
+                });
+            }
+
+            // Confirmar eliminación
+            const deleteForm = document.getElementById('delete-routine-form');
+            if (deleteForm) {
+                deleteForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    if (confirm('⚠️ ¿Estás seguro de que quieres eliminar esta rutina? Esta acción no se puede deshacer.')) {
+                        this.submit();
+                    }
+                });
+            }
+        });
+    </script>
+    <%- include('../partials/footer') %>

@@ -1,110 +1,315 @@
 <%- include('../partials/header', { title: 'Editar Rutina' }) %>
-<div class="container">
-  <h2>Editar Rutina: <%= routine.title %></h2>
-
-  <form
-    action="/routines/<%= routine._id %>?_method=PUT"
-    method="POST"
-  >
-    <div class="form-group">
-      <label for="title">Título:</label>
-      <input
-        type="text"
-        id="title"
-        name="title"
-        value="<%= routine.title %>"
-        required
-      />
+<div class="container fade-in">
+    <div class="routine-header">
+        <div>
+            <h1 class="routine-title">✏️ Editar Rutina</h1>
+            <p class="text-secondary">Modifica tu entrenamiento: <%= routine.title %></p>
+        </div>
+        <a href="/routines/<%= routine._id %>" class="btn btn-success" id="back-to-routine">
+            ← Volver a la Rutina
+        </a>
     </div>
 
-    <div class="form-group">
-      <label for="description">Descripción:</label>
-      <textarea
-        id="description"
-        name="description"
-        required
-      >
-<%= routine.description %></textarea
-      >
-    </div>
+    <form action="/routines/<%= routine._id %>?_method=PUT" method="POST" id="edit-routine-form">
+        <div class="grid grid-cols-1 gap-lg">
+            <!-- Información básica -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-xl font-semibold">📋 Información Básica</h3>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-cols-1 gap-lg">
+                        <div class="form-group">
+                            <label for="title" class="form-label">Título de la rutina</label>
+                            <input 
+                                type="text" 
+                                id="title" 
+                                name="title" 
+                                class="form-control" 
+                                value="<%= routine.title %>" 
+                                required
+                            >
+                        </div>
 
-    <h3>Ejercicios</h3>
-    <div id="exercises-container">
-      <% routine.exercises.forEach((exercise, index) => { %>
-      <div class="exercise-form">
-        <div class="form-group">
-          <label>Nombre:</label>
-          <input
-            type="text"
-            name="exercises[name][]"
-            value="<%= exercise.name %>"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label>Series:</label>
-          <input
-            type="number"
-            name="exercises[sets][]"
-            min="1"
-            value="<%= exercise.sets %>"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label>Repeticiones:</label>
-          <input
-            type="number"
-            name="exercises[reps][]"
-            min="1"
-            value="<%= exercise.reps %>"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label>Descanso (seg):</label>
-          <input
-            type="number"
-            name="exercises[rest][]"
-            min="0"
-            value="<%= exercise.rest %>"
-          />
-        </div>
-      </div>
-      <% }) %>
-    </div>
+                        <div class="form-group">
+                            <label for="description" class="form-label">Descripción</label>
+                            <textarea 
+                                id="description" 
+                                name="description" 
+                                class="form-control form-textarea" 
+                                required
+                            ><%= routine.description %></textarea>
+                        </div>
 
-    <button
-      type="button"
-      id="add-exercise"
-      class="btn secondary"
-    >
-      Añadir Ejercicio
-    </button>
-    <button
-      type="submit"
-      class="btn"
-    >
-      Actualizar Rutina
-    </button>
-  </form>
+                        <div class="form-group">
+                            <label for="difficulty" class="form-label">Nivel de dificultad</label>
+                            <select id="difficulty" name="difficulty" class="form-control form-select">
+                                <option value="Beginner" <%= routine.difficulty === 'Beginner' ? 'selected' : '' %>>🟢 Principiante</option>
+                                <option value="Intermediate" <%= routine.difficulty === 'Intermediate' ? 'selected' : '' %>>🟡 Intermedio</option>
+                                <option value="Advanced" <%= routine.difficulty === 'Advanced' ? 'selected' : '' %>>🔴 Avanzado</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ejercicios -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-semibold">🏋️‍♂️ Ejercicios</h3>
+                        <button type="button" id="add-exercise-btn" class="btn btn-success btn-sm">
+                            Añadir Ejercicio
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="exercises-container">
+                        <% routine.exercises.forEach((exercise, index) => { %>
+                        <div class="exercise-form slide-up" style="animation-delay: <%= index * 0.1 %>s;">
+                            <div class="exercise-form-header">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-semibold">Ejercicio #<%= index + 1 %></h4>
+                                    <button type="button" class="btn btn-danger btn-sm remove-exercise-btn" <%= routine.exercises.length <= 1 ? 'style="display: none;"' : '' %>>
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="exercise-form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Nombre del ejercicio</label>
+                                    <input 
+                                        type="text" 
+                                        name="exercises[name][]" 
+                                        class="form-control" 
+                                        value="<%= exercise.name %>" 
+                                        required
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Series</label>
+                                    <input 
+                                        type="number" 
+                                        name="exercises[sets][]" 
+                                        class="form-control" 
+                                        min="1" 
+                                        value="<%= exercise.sets %>" 
+                                        required
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Repeticiones</label>
+                                    <input 
+                                        type="number" 
+                                        name="exercises[reps][]" 
+                                        class="form-control" 
+                                        min="1" 
+                                        value="<%= exercise.reps %>" 
+                                        required
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Descanso (seg)</label>
+                                    <input 
+                                        type="number" 
+                                        name="exercises[rest][]" 
+                                        class="form-control" 
+                                        min="0" 
+                                        value="<%= exercise.rest %>"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+                    </div>
+                    
+                    <div class="mt-lg text-center" id="exercise-summary">
+                        <div class="grid grid-cols-3 gap-md">
+                            <div class="stat-card">
+                                <div class="stat-value" id="total-exercises"><%= routine.exercises.length %></div>
+                                <div class="stat-label">Ejercicios</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="total-sets">
+                                    <%= routine.exercises.reduce((total, ex) => total + (ex.sets || 0), 0) %>
+                                </div>
+                                <div class="stat-label">Series Totales</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="estimated-time">
+                                    <%= Math.round(routine.exercises.reduce((total, ex) => total + ((ex.rest || 0) * (ex.sets || 0)), 0) / 60) %>
+                                </div>
+                                <div class="stat-label">Min. Estimados</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="flex justify-between items-center">
+                        <a href="/routines/<%= routine._id %>" class="btn btn-danger">
+                            ← Cancelar
+                        </a>
+                        <div class="flex gap-md">                       
+                            <button type="submit" class="btn btn-primary btn-lg" id="update-routine-btn">
+                                💾 Actualizar Rutina
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 
 <script>
-  document
-    .getElementById('add-exercise')
-    .addEventListener('click', function () {
-      const container = document.getElementById('exercises-container');
-      const newExercise = document
-        .querySelector('.exercise-form')
-        .cloneNode(true);
+document.addEventListener('DOMContentLoaded', function() {
+    // Marcar navegación activa
+    const navRoutines = document.getElementById('nav-routines');
+    if (navRoutines) {
+        navRoutines.classList.add('active');
+    }
 
-      // Limpiar los valores del nuevo ejercicio
-      Array.from(newExercise.querySelectorAll('input')).forEach((input) => {
-        input.value = '';
-      });
+    let exerciseCount = <%= routine.exercises.length %>;
 
-      container.appendChild(newExercise);
+    // Función para actualizar numeración de ejercicios
+    function updateExerciseNumbers() {
+        const exercises = document.querySelectorAll('.exercise-form');
+        exercises.forEach((exercise, index) => {
+            const header = exercise.querySelector('h4');
+            header.textContent = `Ejercicio #${index + 1}`;
+            
+            // Mostrar/ocultar botón de eliminar
+            const removeBtn = exercise.querySelector('.remove-exercise-btn');
+            if (exercises.length > 1) {
+                removeBtn.style.display = 'inline-flex';
+            } else {
+                removeBtn.style.display = 'none';
+            }
+        });
+        exerciseCount = exercises.length;
+        updateSummary();
+    }
+
+    // Función para actualizar resumen
+    function updateSummary() {
+        const exercises = document.querySelectorAll('.exercise-form');
+        let totalSets = 0;
+        let totalTime = 0;
+
+        exercises.forEach(exercise => {
+            const sets = parseInt(exercise.querySelector('input[name="exercises[sets][]"]').value) || 0;
+            const rest = parseInt(exercise.querySelector('input[name="exercises[rest][]"]').value) || 0;
+            totalSets += sets;
+            totalTime += (sets * rest) / 60; // Estimación básica
+        });
+
+        document.getElementById('total-exercises').textContent = exercises.length;
+        document.getElementById('total-sets').textContent = totalSets;
+        document.getElementById('estimated-time').textContent = Math.round(totalTime);
+    }
+
+    // Añadir nuevo ejercicio
+    document.getElementById('add-exercise-btn').addEventListener('click', function() {
+        exerciseCount++;
+        const container = document.getElementById('exercises-container');
+        const newExercise = document.querySelector('.exercise-form').cloneNode(true);
+
+        // Limpiar valores
+        newExercise.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+        newExercise.querySelectorAll('input[type="number"]').forEach(input => {
+            if (input.name.includes('sets')) input.value = '3';
+            else if (input.name.includes('reps')) input.value = '10';
+            else if (input.name.includes('rest')) input.value = '60';
+        });
+
+        // Añadir animación
+        newExercise.classList.add('slide-up');
+        container.appendChild(newExercise);
+
+        updateExerciseNumbers();
     });
+
+    // Eliminar ejercicio
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-exercise-btn') || e.target.closest('.remove-exercise-btn')) {
+            const exerciseForm = e.target.closest('.exercise-form');
+            if (document.querySelectorAll('.exercise-form').length > 1) {
+                if (confirm('¿Estás seguro de que quieres eliminar este ejercicio?')) {
+                    exerciseForm.remove();
+                    updateExerciseNumbers();
+                }
+            }
+        }
+    });
+
+    // Actualizar resumen cuando cambien los valores
+    document.addEventListener('input', function(e) {
+        if (e.target.name && e.target.name.includes('exercises[')) {
+            updateSummary();
+        }
+    });
+
+    // Vista previa
+    document.getElementById('preview-btn').addEventListener('click', function() {
+        const title = document.getElementById('title').value;
+        const description = document.getElementById('description').value;
+        const exercises = Array.from(document.querySelectorAll('.exercise-form')).map((form, index) => {
+            return {
+                name: form.querySelector('input[name="exercises[name][]"]').value,
+                sets: form.querySelector('input[name="exercises[sets][]"]').value,
+                reps: form.querySelector('input[name="exercises[reps][]"]').value,
+                rest: form.querySelector('input[name="exercises[rest][]"]').value
+            };
+        });
+
+        let preview = `📋 VISTA PREVIA DE LA RUTINA\n\n`;
+        preview += `Título: ${title}\n`;
+        preview += `Descripción: ${description}\n\n`;
+        preview += `Ejercicios:\n`;
+        
+        exercises.forEach((ex, i) => {
+            if (ex.name) {
+                preview += `${i + 1}. ${ex.name} - ${ex.sets} series x ${ex.reps} reps`;
+                if (ex.rest) preview += ` (${ex.rest}s descanso)`;
+                preview += `\n`;
+            }
+        });
+
+        alert(preview);
+    });
+
+    // Validación del formulario
+    document.getElementById('edit-routine-form').addEventListener('submit', function(e) {
+        const exercises = document.querySelectorAll('input[name="exercises[name][]"]');
+        let hasEmptyExercise = false;
+
+        exercises.forEach(input => {
+            if (!input.value.trim()) {
+                hasEmptyExercise = true;
+                input.style.borderColor = 'var(--danger-color)';
+            } else {
+                input.style.borderColor = 'var(--border-color)';
+            }
+        });
+
+        if (hasEmptyExercise) {
+            e.preventDefault();
+            alert('⚠️ Por favor, completa el nombre de todos los ejercicios.');
+            return;
+        }
+
+        // Mostrar loading en el botón
+        const submitBtn = document.getElementById('update-routine-btn');
+        submitBtn.innerHTML = '<div class="spinner"></div> Actualizando...';
+        submitBtn.disabled = true;
+    });
+
+    // Inicializar resumen
+    updateSummary();
+});
 </script>
 <%- include('../partials/footer') %>
