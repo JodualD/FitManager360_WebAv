@@ -1,19 +1,49 @@
 <%- include('../partials/header', { title: 'Restablecer Contraseña' }) %>
-    <div class="auth-container">
-        <h2>Restablecer Contraseña</h2>
-        <% if (error) { %>
-            <div class="alert error"><%= error %></div>
-        <% } %>
-        <% if (message) { %>
-            <div class="alert success"><%= message %></div>
-        <% } %>
-        <form action="/reset" method="POST">
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+<div class="auth-container">
+    <div class="auth-card fade-in">
+        <div class="auth-header">
+            <div class="logo">
+                <div class="logo-icon">FM</div>
             </div>
-            <button type="submit" class="btn">Enviar Instrucciones</button>
+            <h2 class="auth-title">Restablecer Contraseña</h2>
+            <p class="auth-subtitle">Te enviaremos un enlace para restablecer tu contraseña</p>
+        </div>
+        
+        <% if (error) { %>
+            <div class="alert alert-error" id="reset-error">
+                <span>⚠️</span>
+                <%= error %>
+            </div>
+        <% } %>
+        
+        <% if (message) { %>
+            <div class="alert alert-success" id="reset-success">
+                <span>✅</span>
+                <%= message %>
+            </div>
+        <% } %>
+        
+        <form action="/reset" method="POST" id="reset-form">
+            <div class="form-group">
+                <label for="email" class="form-label">Correo electrónico</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="form-control" 
+                    placeholder="tu@email.com"
+                    required
+                >
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;" id="reset-submit">
+                Enviar Instrucciones
+            </button>
         </form>
-        <p><a href="/login">Volver al inicio de sesión</a></p>
+        
+        <div class="auth-footer">
+            <p><a href="/login" class="auth-link">← Volver al inicio de sesión</a></p>
+        </div>
     </div>
+</div>
 <%- include('../partials/footer') %>

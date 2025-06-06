@@ -1,36 +1,133 @@
 <%- include('partials/header', { title: 'Dashboard' }) %>
-<div class="dashboard">
-  <h2>Bienvenido, <%= user.name %></h2>
-
-  <div class="stats">
-    <div class="stat-card">
-      <h3>Tus Rutinas</h3>
-      <p>5</p>
-      <!-- Esto debería ser dinámico -->
-      <a
-        href="/routines"
-        class="btn"
-        >Ver todas</a
-      >
+<div class="container fade-in">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">¡Hola, <%= user.name %>! 👋</h1>
+        <p class="dashboard-subtitle">Bienvenido a tu centro de entrenamiento personal</p>
     </div>
 
-    <div class="stat-card">
-      <h3>Progreso</h3>
-      <p>Último peso: <%= user.weight || 'No registrado' %> kg</p>
-      <a
-        href="#"
-        class="btn"
-        >Actualizar</a
-      >
-    </div>
-  </div>
+    <div class="stats-grid" id="dashboard-stats">
+        <div class="stat-card slide-up">
+            <div class="stat-icon primary">💪</div>
+            <div class="stat-value" id="routines-count">5</div>
+            <div class="stat-label">Rutinas Activas</div>
+            <div class="mt-md">
+                <a href="/routines" class="btn btn-primary btn-sm">Ver Rutinas</a>
+            </div>
+        </div>
 
-  <div class="recent-activities">
-    <h3>Actividades Recientes</h3>
-    <ul>
-      <li>Rutina "Piernas" completada - Hoy</li>
-      <li>Nueva rutina "Brazos" creada - Ayer</li>
-    </ul>
-  </div>
+        <div class="stat-card slide-up">
+            <div class="stat-icon success">📊</div>
+            <div class="stat-value" id="user-weight"><%= user.weight || '--' %></div>
+            <div class="stat-label">Peso Actual (kg)</div>
+            <div class="mt-md">
+                <button class="btn btn-secondary btn-sm" id="update-weight-btn">Actualizar</button>
+            </div>
+        </div>
+
+        <div class="stat-card slide-up">
+            <div class="stat-icon warning">🎯</div>
+            <div class="stat-value">12</div>
+            <div class="stat-label">Entrenamientos este mes</div>
+            <div class="mt-md">
+                <a href="/routines/new" class="btn btn-success btn-sm">Nuevo Entrenamiento</a>
+            </div>
+        </div>
+
+        <div class="stat-card slide-up">
+            <div class="stat-icon primary">🔥</div>
+            <div class="stat-value">7</div>
+            <div class="stat-label">Racha de días</div>
+            <div class="mt-md">
+                <span class="text-sm text-secondary">¡Sigue así!</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-lg">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-xl font-semibold" id="recent-activities-title">📈 Actividades Recientes</h3>
+            </div>
+            <div class="card-body">
+                <div class="recent-activities" id="recent-activities-list">
+                    <div class="activity-item flex items-center gap-md mb-md">
+                        <div class="activity-icon">✅</div>
+                        <div class="activity-content">
+                            <div class="activity-title font-medium">Rutina "Piernas" completada</div>
+                            <div class="activity-time text-sm text-secondary">Hoy a las 14:30</div>
+                        </div>
+                    </div>
+                    <div class="activity-item flex items-center gap-md mb-md">
+                        <div class="activity-icon">➕</div>
+                        <div class="activity-content">
+                            <div class="activity-title font-medium">Nueva rutina "Brazos" creada</div>
+                            <div class="activity-time text-sm text-secondary">Ayer a las 10:15</div>
+                        </div>
+                    </div>
+                    <div class="activity-item flex items-center gap-md mb-md">
+                        <div class="activity-icon">🏆</div>
+                        <div class="activity-content">
+                            <div class="activity-title font-medium">Meta semanal alcanzada</div>
+                            <div class="activity-time text-sm text-secondary">Hace 2 días</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="/routines" class="btn btn-secondary btn-sm">Ver todas las actividades</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-xl font-semibold" id="quick-actions-title">⚡ Acciones Rápidas</h3>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-cols-2 gap-md" id="quick-actions">
+                    <a href="/routines/new" class="btn btn-primary">
+                        Nueva Rutina
+                    </a>
+                    <a href="/chat" class="btn btn-secondary">
+                        Abrir Chat
+                    </a>
+                    <button class="btn btn-success" id="start-workout-btn">
+                        Iniciar Entrenamiento
+                    </button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Marcar navegación activa
+    const navDashboard = document.getElementById('nav-dashboard');
+    if (navDashboard) {
+        navDashboard.classList.add('active');
+    }
+
+    // Botón de actualizar peso
+    const updateWeightBtn = document.getElementById('update-weight-btn');
+    if (updateWeightBtn) {
+        updateWeightBtn.addEventListener('click', function() {
+            const newWeight = prompt('Ingresa tu peso actual (kg):');
+            if (newWeight && !isNaN(newWeight)) {
+                // Aquí iría la lógica para actualizar el peso
+                document.getElementById('user-weight').textContent = newWeight;
+                alert('Peso actualizado correctamente');
+            }
+        });
+    }
+
+    // Botón de iniciar entrenamiento
+    const startWorkoutBtn = document.getElementById('start-workout-btn');
+    if (startWorkoutBtn) {
+        startWorkoutBtn.addEventListener('click', function() {
+            window.location.href = '/routines';
+        });
+    }
+});
+</script>
 <%- include('partials/footer') %>

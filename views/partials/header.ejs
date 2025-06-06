@@ -5,21 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitManager360 - <%= title %></title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
-    <header>
-        <nav>
+    <% if (currentUser) { %>
+    <header class="header">
+        <nav class="navbar">
             <div class="logo">
+                <div class="logo-icon">FM</div>
                 <h1>FitManager360</h1>
             </div>
-            <% if (currentUser) { %>
-                <ul>
-                    <li><a href="/dashboard">Dashboard</a></li>
-                    <li><a href="/routines">Mis Rutinas</a></li>
-                    <li><a href="/chat">Chat</a></li>
-                    <li><a href="/logout">Cerrar Sesión</a></li>
-                </ul>
-            <% } %>
+            <ul class="nav-menu">
+                <li><a href="/dashboard" class="nav-link" id="nav-dashboard">Dashboard</a></li>
+                <li><a href="/routines" class="nav-link" id="nav-routines">Rutinas</a></li>
+                <li><a href="/chat" class="nav-link" id="nav-chat">Chat</a></li>
+                <li><a href="/logout" class="nav-link" id="nav-logout">Salir</a></li>
+            </ul>
         </nav>
     </header>
-    <main>
+    <% } %>
+    <main class="main-content">
