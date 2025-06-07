@@ -1,133 +1,491 @@
+<!-- Incluye el header parcial pasando el título de la página -->
 <%- include('partials/header', { title: 'Dashboard' }) %>
+
+<!-- Contenedor principal con animación fade-in -->
 <div class="container fade-in">
-    <div class="dashboard-header">
-        <h1 class="dashboard-title">¡Hola, <%= user.name %>! 👋</h1>
-        <p class="dashboard-subtitle">Bienvenido a tu centro de entrenamiento personal</p>
+  <!-- SECCIÓN DE MENSAJES DE ERROR -->
+  <!-- Verifica si existe una variable 'error' y la muestra -->
+  <% if (typeof error !== 'undefined' && error) { %>
+  <div
+    class="alert alert-danger alert-dismissible fade show"
+    role="alert"
+  >
+    <%= error %>
+    <!-- Muestra el mensaje de error -->
+    <!-- Botón para cerrar la alerta -->
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+    ></button>
+  </div>
+  <% } %>
+
+  <!-- HEADER DEL DASHBOARD -->
+  <div class="dashboard-header mb-4">
+    <!-- Saludo personalizado con el nombre del usuario -->
+    <h1 class="dashboard-title">
+      ¡Hola, <%= user && user.name ? user.name : 'Usuario' %>! 👋 Dashboard de
+      Rutinas
+    </h1>
+    <!-- Subtítulo descriptivo -->
+    <p class="dashboard-subtitle">
+      Bienvenido a tu centro de entrenamiento personal. Gestiona y monitorea tus
+      rutinas de entrenamiento
+    </p>
+    <!-- Botones de acción principales -->
+    <div class="mt-3">
+      <!-- Botón para crear nueva rutina -->
+      <a
+        href="/routines/new"
+        class="btn btn-primary btn-lg"
+      >
+        <i class="fas fa-plus me-2"></i>Nueva Rutina
+      </a>
+      <!-- Botón para ver lista de rutinas -->
+      <a
+        href="/routines"
+        class="btn btn-outline-secondary btn-lg ms-2"
+      >
+        <i class="fas fa-list me-2"></i>Ver Lista
+      </a>
+    </div>
+  </div>
+
+  <!-- SECCIÓN DE ESTADÍSTICAS -->
+  <div
+    class="stats-grid mb-4"
+    id="dashboard-stats"
+  >
+    <!-- Tarjeta 1: Total de rutinas -->
+    <div class="stat-card slide-up">
+      <div class="stat-icon text-primary">📋</div>
+      <!-- Muestra el número total de rutinas desde las estadísticas -->
+      <div
+        class="stat-value"
+        id="routines-count"
+      >
+        <%= stats.totalRoutines %>
+      </div>
+      <div class="stat-label">Rutinas Totales</div>
+      <!-- Botón para ver las rutinas -->
+      <a
+        href="/routines"
+        class="btn btn-primary btn-sm"
+        >Ver Rutinas</a
+      >
     </div>
 
-    <div class="stats-grid" id="dashboard-stats">
-        <div class="stat-card slide-up">
-            <div class="stat-icon primary">💪</div>
-            <div class="stat-value" id="routines-count">5</div>
-            <div class="stat-label">Rutinas Activas</div>
-            <div class="mt-md">
-                <a href="/routines" class="btn btn-primary btn-sm">Ver Rutinas</a>
-            </div>
-        </div>
-
-        <div class="stat-card slide-up">
-            <div class="stat-icon success">📊</div>
-            <div class="stat-value" id="user-weight"><%= user.weight || '--' %></div>
-            <div class="stat-label">Peso Actual (kg)</div>
-            <div class="mt-md">
-                <button class="btn btn-secondary btn-sm" id="update-weight-btn">Actualizar</button>
-            </div>
-        </div>
-
-        <div class="stat-card slide-up">
-            <div class="stat-icon warning">🎯</div>
-            <div class="stat-value">12</div>
-            <div class="stat-label">Entrenamientos este mes</div>
-            <div class="mt-md">
-                <a href="/routines/new" class="btn btn-success btn-sm">Nuevo Entrenamiento</a>
-            </div>
-        </div>
-
-        <div class="stat-card slide-up">
-            <div class="stat-icon primary">🔥</div>
-            <div class="stat-value">7</div>
-            <div class="stat-label">Racha de días</div>
-            <div class="mt-md">
-                <span class="text-sm text-secondary">¡Sigue así!</span>
-            </div>
-        </div>
+    <!-- Tarjeta 2: Rutinas completadas -->
+    <div class="stat-card slide-up">
+      <div class="stat-icon text-success">✅</div>
+      <!-- Muestra el total de completaciones -->
+      <div
+        class="stat-value"
+        id="completed-count"
+      >
+        <%= stats.totalCompletions || 0 %>
+      </div>
+      <div class="stat-label">Completadas</div>
     </div>
 
-    <div class="grid grid-cols-1 gap-lg">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="text-xl font-semibold" id="recent-activities-title">📈 Actividades Recientes</h3>
-            </div>
-            <div class="card-body">
-                <div class="recent-activities" id="recent-activities-list">
-                    <div class="activity-item flex items-center gap-md mb-md">
-                        <div class="activity-icon">✅</div>
-                        <div class="activity-content">
-                            <div class="activity-title font-medium">Rutina "Piernas" completada</div>
-                            <div class="activity-time text-sm text-secondary">Hoy a las 14:30</div>
-                        </div>
-                    </div>
-                    <div class="activity-item flex items-center gap-md mb-md">
-                        <div class="activity-icon">➕</div>
-                        <div class="activity-content">
-                            <div class="activity-title font-medium">Nueva rutina "Brazos" creada</div>
-                            <div class="activity-time text-sm text-secondary">Ayer a las 10:15</div>
-                        </div>
-                    </div>
-                    <div class="activity-item flex items-center gap-md mb-md">
-                        <div class="activity-icon">🏆</div>
-                        <div class="activity-content">
-                            <div class="activity-title font-medium">Meta semanal alcanzada</div>
-                            <div class="activity-time text-sm text-secondary">Hace 2 días</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <a href="/routines" class="btn btn-secondary btn-sm">Ver todas las actividades</a>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <h3 class="text-xl font-semibold" id="quick-actions-title">⚡ Acciones Rápidas</h3>
-            </div>
-            <div class="card-body">
-                <div class="grid grid-cols-2 gap-md" id="quick-actions">
-                    <a href="/routines/new" class="btn btn-primary">
-                        Nueva Rutina
-                    </a>
-                    <a href="/chat" class="btn btn-secondary">
-                        Abrir Chat
-                    </a>
-                    <button class="btn btn-success" id="start-workout-btn">
-                        Iniciar Entrenamiento
-                    </button>
-                    
-                </div>
-            </div>
-        </div>
+    <!-- Tarjeta 3: Duración promedio -->
+    <div class="stat-card slide-up">
+      <div class="stat-icon text-warning">⌚</div>
+      <!-- Calcula y muestra la duración promedio redondeada -->
+      <div
+        class="stat-value"
+        id="avg-duration"
+      >
+        <%= Math.round((stats && typeof stats.avgDuration !== 'undefined' ?
+        stats.avgDuration : 0)) %>
+      </div>
+      <div class="stat-label">Min Promedio</div>
     </div>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Marcar navegación activa
-    const navDashboard = document.getElementById('nav-dashboard');
-    if (navDashboard) {
-        navDashboard.classList.add('active');
-    }
+    <!-- Tarjeta 4: Total de ejercicios -->
+    <div class="stat-card slide-up">
+      <div class="stat-icon text-info">🏃‍♂️</div>
+      <!-- Muestra el total de ejercicios -->
+      <div
+        class="stat-value"
+        id="total-exercises"
+      >
+        <%= stats && typeof stats.totalExercises !== 'undefined' ?
+        stats.totalExercises : 0 %>
+      </div>
+      <div class="stat-label">Total Ejercicios</div>
+    </div>
+  </div>
 
-    // Botón de actualizar peso
-    const updateWeightBtn = document.getElementById('update-weight-btn');
-    if (updateWeightBtn) {
-        updateWeightBtn.addEventListener('click', function() {
-            const newWeight = prompt('Ingresa tu peso actual (kg):');
-            if (newWeight && !isNaN(newWeight)) {
-                // Aquí iría la lógica para actualizar el peso
-                document.getElementById('user-weight').textContent = newWeight;
-                alert('Peso actualizado correctamente');
+  <!-- SECCIÓN DE FILTROS Y BÚSQUEDA -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <!-- Campo de búsqueda -->
+        <div class="col-md-4">
+          <label
+            for="searchRoutines"
+            class="form-label"
+            >Buscar rutinas</label
+          >
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              id="searchRoutines"
+              placeholder="Buscar por nombre..."
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              id="searchButton"
+            >
+              <i class="fas fa-search">Buscar</i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtro por dificultad -->
+        <div class="col-md-3">
+          <label
+            for="filterDifficulty"
+            class="form-label"
+            >Dificultad</label
+          >
+          <select
+            class="form-select"
+            id="filterDifficulty"
+          >
+            <option value="">Todas las dificultades</option>
+            <option value="Beginner">Principiante</option>
+            <option value="Intermediate">Intermedio</option>
+            <option value="Advanced">Avanzado</option>
+          </select>
+        </div>
+
+        <!-- Ordenamiento -->
+        <div class="col-md-3">
+          <label
+            for="sortBy"
+            class="form-label"
+            >Ordenar por</label
+          >
+          <select
+            class="form-select"
+            id="sortBy"
+          >
+            <option value="newest">Más recientes</option>
+            <option value="oldest">Más antiguas</option>
+            <option value="name">Por nombre</option>
+            <option value="duration">Por duración</option>
+          </select>
+        </div>
+
+        <!-- Botón para limpiar filtros -->
+        <div class="col-md-2">
+          <label class="form-label">&nbsp;</label>
+          <button
+            class="btn btn-secondary w-100 d-block"
+            id="clearFilters"
+          >
+            <i class="fas fa-eraser me-1"></i>Limpiar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRID DE RUTINAS -->
+  <div class="card">
+    <div class="card-header">
+      <!-- Condición: Si no hay rutinas, muestra mensaje vacío -->
+      <% if (!routines || routines.length === 0) { %>
+      <div class="col-12">
+        <div class="text-center py-5">
+          <i class="fas fa-dumbbell fa-4x text-muted mb-3"></i>
+          <h3 class="text-muted">No tienes rutinas creadas</h3>
+          <p class="text-muted">
+            ¡Crea tu primera rutina para comenzar a entrenar!
+          </p>
+          <!-- Botón para crear primera rutina -->
+          <a
+            href="/routines/new"
+            class="btn btn-primary btn-lg"
+          >
+            <i class="fas fa-plus me-2"></i>Crear Primera Rutina
+          </a>
+        </div>
+      </div>
+
+      <!-- Si hay rutinas, las muestra iterando sobre el array -->
+      <% } else { %> <% routines.forEach(routine => { %>
+
+      <!-- Contenedor de cada rutina con datos para filtrado -->
+      <div
+        class="col-md-6 col-lg-4 mb-4 routine-card"
+        data-name="<%= (routine.title || '').toLowerCase() %>"
+        data-difficulty="<%= routine.difficulty || 'Beginner' %>"
+        data-created="<%= routine.createdAt ? new Date(routine.createdAt).getTime() : Date.now() %>"
+        data-duration="<%= routine.duration || 0 %>"
+      >
+        <!-- Tarjeta de la rutina -->
+        <div class="card-body">
+          <!-- Header de la tarjeta con título y menú -->
+          <div
+            class="card-header d-flex justify-content-between align-items-center"
+          >
+            <!-- Título de la rutina (truncado si es muy largo) -->
+            <h5
+              class="exercise-name text-truncate"
+              title="<%= routine.title || 'Sin título' %>"
+            >
+              <%= routine.title || 'Sin título' %>
+            </h5>
+
+            <!-- Menú dropdown con opciones -->
+          </div>
+
+          <!-- Cuerpo de la tarjeta -->
+          <div class="card-body">
+            <!-- Descripción truncada a 100 caracteres -->
+            <p class="card-text text-muted small mb-2">
+              <% const description = routine.description || 'Sin descripción';
+              const truncatedDescription = description.length > 100 ?
+              description.substring(0, 100) + '...' : description; %> <%=
+              truncatedDescription %>
+            </p>
+
+            <!-- Badges con dificultad y tags -->
+            <div class="mb-3">
+              <!-- Badge de dificultad con color dinámico -->
+              <% if (routine.difficulty === 'Beginner') { %>
+              <span class="badge bg-success me-1">Principiante</span>
+              <% } else if (routine.difficulty === 'Intermediate') { %>
+              <span class="badge bg-warning text-dark me-1">Intermedio</span>
+              <% } else if (routine.difficulty === 'Advanced') { %>
+              <span class="badge bg-danger me-1">Avanzado</span>
+              <% } else { %>
+              <span class="badge bg-success me-1">Principiante</span>
+              <% } %>
+
+              <!-- Tags de la rutina (máximo 2) -->
+              <% if (routine.tags && Array.isArray(routine.tags) &&
+              routine.tags.length > 0) { %> <% routine.tags.slice(0,
+              2).forEach(tag => { %>
+              <span class="badge bg-secondary me-1"><%= tag %></span>
+              <% }); %> <% } %>
+            </div>
+
+            <!-- Primera fila de información -->
+            <div class="row text-muted small">
+              <!-- Duración -->
+              <div class="col-6">
+                <i class="fas fa-clock me-1"></i>
+                <%= routine.duration || 0 %> min
+              </div>
+              <!-- Número de ejercicios -->
+              <div class="col-6">
+                <i class="fas fa-running me-1"></i>
+                <%= routine.exercises && Array.isArray(routine.exercises) ?
+                routine.exercises.length : 0 %> ejercicios
+              </div>
+            </div>
+
+            <!-- Segunda fila de información -->
+            <div class="row text-muted small mt-2">
+              <!-- Veces completada -->
+              <div class="col-6">
+                <i class="fas fa-check-circle me-1"></i>
+                <%= routine.completedCount || 0 %> veces rutinas completadas
+              </div>
+              <!-- Fecha de creación formateada -->
+              <div class="col-6">
+                <i class="fas fa-calendar me-1"></i>
+                <%= routine.formattedCreatedAt || 'Sin fecha' %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer con botones de acción -->
+          <div class="card-footer">
+            <div
+              class="btn-group w-100"
+              role="group"
+            >
+              <!-- Botón Ver -->
+              <a
+                href="/routines/<%= routine._id %>"
+                class="btn btn-outline-primary btn-sm"
+              >
+                <i class="fas fa-eye me-1"></i>Ver
+              </a>
+              <!-- Botón Editar -->
+              <a
+                href="/routines/<%= routine._id %>/edit"
+                class="btn btn-outline-secondary btn-sm"
+              >
+                <i class="fas fa-edit me-1"></i>Editar
+              </a>
+              <!-- Botón Completar -->
+              <button
+                class="btn btn-success btn-sm complete-routine-btn"
+                data-id="<%= routine._id %>"
+              >
+                <i class="fas fa-check me-1"></i>Completar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+      <!-- Fin del forEach -->
+      <% } %>
+      <!-- Fin del else -->
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const searchInput = document.getElementById('searchRoutines');
+      const searchButton = document.getElementById('searchButton');
+      const difficultyFilter = document.getElementById('filterDifficulty');
+      const sortSelect = document.getElementById('sortBy');
+      const clearButton = document.getElementById('clearFilters');
+      const routineCards = document.querySelectorAll('.routine-card');
+      const completeButtons = document.querySelectorAll(
+        '.complete-routine-btn'
+      );
+
+      // Función para mostrar u ocultar tarjetas según filtros
+      function filterAndSortRoutines() {
+        const searchQuery = searchInput.value.toLowerCase();
+        const selectedDifficulty = difficultyFilter.value;
+        const sortBy = sortSelect.value;
+
+        let routinesArray = Array.from(routineCards);
+
+        // Filtrar por nombre y dificultad
+        routinesArray.forEach((card) => {
+          const name = card.dataset.name || '';
+          const difficulty = card.dataset.difficulty || '';
+
+          const matchesSearch = name.includes(searchQuery);
+          const matchesDifficulty =
+            !selectedDifficulty || difficulty === selectedDifficulty;
+
+          if (matchesSearch && matchesDifficulty) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        // Ordenar tarjetas visibles
+        routinesArray = routinesArray.filter(
+          (card) => card.style.display !== 'none'
+        );
+
+        routinesArray.sort((a, b) => {
+          switch (sortBy) {
+            case 'newest':
+              return (
+                parseInt(b.dataset.created || '0') -
+                parseInt(a.dataset.created || '0')
+              );
+            case 'oldest':
+              return (
+                parseInt(a.dataset.created || '0') -
+                parseInt(b.dataset.created || '0')
+              );
+            case 'name':
+              return (a.dataset.name || '').localeCompare(b.dataset.name || '');
+            case 'duration':
+              return (
+                parseInt(a.dataset.duration || '0') -
+                parseInt(b.dataset.duration || '0')
+              );
+            default:
+              return 0;
+          }
+        });
+
+        // Reordenar DOM
+        const container = document.getElementById('routinesContainer');
+        routinesArray.forEach((card) => container.appendChild(card));
+      }
+
+      // Función para completar rutina
+      function completeRoutine(routineId) {
+        fetch(`/routines/${routineId}/complete`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Mostrar mensaje de éxito
+              alert(data.message || 'Rutina completada exitosamente 🏋️');
+
+              // Actualizar contador en la interfaz si es necesario
+              const completedCountElement =
+                document.getElementById('completed-count');
+              if (completedCountElement) {
+                const currentCount =
+                  parseInt(completedCountElement.textContent) || 0;
+                completedCountElement.textContent = currentCount + 1;
+              }
+
+              // Recargar la página para actualizar las estadísticas
+              location.reload();
+            } else {
+              alert(data.message || 'Error al completar la rutina');
             }
-        });
-    }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            alert('Error al completar la rutina');
+          });
+      }
 
-    // Botón de iniciar entrenamiento
-    const startWorkoutBtn = document.getElementById('start-workout-btn');
-    if (startWorkoutBtn) {
-        startWorkoutBtn.addEventListener('click', function() {
-            window.location.href = '/routines';
+      // Eventos de búsqueda y filtros
+      if (searchButton) {
+        searchButton.addEventListener('click', filterAndSortRoutines);
+      }
+      if (searchInput) {
+        searchInput.addEventListener('input', filterAndSortRoutines);
+      }
+      if (difficultyFilter) {
+        difficultyFilter.addEventListener('change', filterAndSortRoutines);
+      }
+      if (sortSelect) {
+        sortSelect.addEventListener('change', filterAndSortRoutines);
+      }
+      if (clearButton) {
+        clearButton.addEventListener('click', () => {
+          searchInput.value = '';
+          difficultyFilter.value = '';
+          sortSelect.value = 'newest';
+          filterAndSortRoutines();
         });
-    }
-});
-</script>
-<%- include('partials/footer') %>
+      }
+
+      // Eventos para botones de completar rutina
+      completeButtons.forEach((button) => {
+        button.addEventListener('click', function (e) {
+          e.preventDefault();
+          const routineId = this.dataset.id;
+          if (routineId) {
+            completeRoutine(routineId);
+          }
+        });
+      });
+
+      // Aplicar filtro inicial
+      filterAndSortRoutines();
+    });
+  </script>
+</div>
