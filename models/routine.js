@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
+const { Schema, model, Types } = mongoose;
 
+// Subdocumento de ejercicios
 const exerciseSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -26,9 +28,11 @@ const exerciseSchema = new mongoose.Schema({
   description: {
     type: String,
     trim: true,
-    maxlength: [500, 'La descripción no puede exceder 300 caracteres'],
+    maxlength: [500, 'La descripción no puede exceder 500 caracteres'],
   },
 });
+
+// Esquema de rutinas
 const routineSchema = new mongoose.Schema(
   {
     title: {
@@ -39,73 +43,65 @@ const routineSchema = new mongoose.Schema(
       maxlength: [100, 'El título no puede exceder 100 caracteres'],
     },
     description: {
+      type: String,
+      required: [true, 'La descripción es obligatoria'],
+      trim: true,
+      minlength: [10, 'La descripción debe tener al menos 10 caracteres'],
+      maxlength: [500, 'La descripción no puede exceder 500 caracteres'],
+    },
+    exercises: {
       type: [exerciseSchema],
       validate: {
         validator: function (exercises) {
           return exercises && exercises.length > 0;
         },
         message: 'Debe haber al menos un ejercicio en la rutina',
-        required: true,
-        required: [true, 'La descripción es obligatoria'],
-        trim: true,
-        minlength: [10, 'La descripción debe tener al menos 10 caracteres'],
-        maxlength: [500, 'La descripción no puede exceder 500 caracteres'],
       },
-      exercises: {
-        type: [exerciseSchema],
-        validate: {
-          validator: function (exercises) {
-            return exercises && exercises.length > 0;
-          },
-          message: 'Debe haber al menos un ejercicio en la rutina',
-        },
-      },
-
-      createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-      },
-      difficulty: {
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    difficulty: {
+      type: String,
+      enum: ['Beginner', 'Intermediate', 'Advanced'],
+      default: 'Intermediate',
+    },
+    duration: {
+      type: Number,
+      default: 30,
+      min: [5, 'La duración mínima es 5 minutos'],
+      max: [300, 'La duración máxima es 300 minutos'],
+    },
+    completedCount: {
+      type: Number,
+      default: 0,
+      min: [0, 'El contador no puede ser negativo'],
+    },
+    lastCompleted: {
+      type: Date,
+    },
+    tags: [
+      {
         type: String,
-        enum: ['Beginner', 'Intermediate', 'Advanced'],
-        default: 'Intermediate',
+        trim: true,
+        maxlength: [30, 'Cada tag no puede exceder 30 caracteres'],
       },
-      // Nuevos campos para el dashboard
-      duration: {
-        type: Number, // duración estimada en minutos
-        default: 30,
-        min: [5, 'La duración mínima es 5 minutos'],
-        max: [300, 'La duración máxima es 300 minutos'],
-      },
-      completedCount: {
-        type: Number,
-        default: 0,
-        min: [0, 'El contador no puede ser negativo'],
-      },
-      lastCompleted: {
-        type: Date,
-      },
-      tags: [
-        {
-          type: String,
-          trim: true,
-          maxlength: [30, 'Cada tag no puede exceder 30 caracteres'],
-        },
-      ],
-      isActive: {
-        type: Boolean,
-        default: true,
-      },
+    ],
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }
 );
-// Índices para optimizar consultas
+
+// Índices
 routineSchema.index({ createdBy: 1, createdAt: -1 });
 routineSchema.index({ createdBy: 1, title: 1 });
 
-// Métodos virtuales
+// Virtuales
 routineSchema.virtual('totalExercises').get(function () {
   return this.exercises ? this.exercises.length : 0;
 });
@@ -126,7 +122,7 @@ routineSchema.virtual('formattedCreatedAt').get(function () {
   });
 });
 
-// Método para marcar como completada
+// Método de instancia
 routineSchema.methods.markAsCompleted = function () {
   this.completedCount += 1;
   this.lastCompleted = new Date();
@@ -135,8 +131,11 @@ routineSchema.methods.markAsCompleted = function () {
 
 // Método estático para estadísticas
 routineSchema.statics.getUserStats = async function (userId) {
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    throw new Error('ID de usuario no válido');
+  }
   const stats = await this.aggregate([
-    { $match: { createdBy: mongoose.Types.ObjectId(userId), isActive: true } },
+    { $match: { createdBy: new Types.ObjectId(userId), isActive: true } },
     {
       $group: {
         _id: null,
@@ -158,7 +157,7 @@ routineSchema.statics.getUserStats = async function (userId) {
   );
 };
 
-// Configurar toJSON
+// Configuración de salida JSON
 routineSchema.set('toJSON', {
   virtuals: true,
   transform: function (doc, ret) {
@@ -166,4 +165,5 @@ routineSchema.set('toJSON', {
     return ret;
   },
 });
+
 module.exports = mongoose.model('Routine', routineSchema);
