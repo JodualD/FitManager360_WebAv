@@ -149,6 +149,12 @@ body {
 }
 
 /* Container Styles */
+.container.fade-in {
+  height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -978,7 +984,7 @@ body {
   display: grid;
   grid-template-columns: 300px 1fr;
   gap: var(--spacing-lg);
-  height: calc(100vh - 160px);
+  height: auto;
   background: var(--bg-card);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
@@ -1207,7 +1213,6 @@ body {
 
   .chat-container {
     grid-template-columns: 1fr;
-    height: auto;
   }
 
   .chat-sidebar {

@@ -1,345 +1,365 @@
 <%- include('../partials/header', { title: 'Chat' }) %>
-<!-- Meta tag con el ID del usuario actual -->
-<meta name="user-id" content="<%= currentUser._id %>">
+    <!-- Meta tag con el ID del usuario actual -->
+    <meta name="user-id" content="<%= currentUser._id %>">
 
-<div class="container fade-in">
-    <div class="chat-container">
-        <!-- Sidebar de usuarios -->
-        <div class="chat-sidebar">
-            <div class="chat-sidebar-header">
-                <h3 class="chat-sidebar-title">💬 Conversaciones</h3>
-            </div>
-            <div class="chat-users-list" id="users-list">
-                <% users.forEach(user => { %>
-                <div class="chat-user-item start-chat" data-userid="<%= user._id %>" data-username="<%= user.name %>">
-                    <div class="chat-user-avatar">
-                        <%= user.name.charAt(0).toUpperCase() %>
-                    </div>
-                    <div class="chat-user-info">
-                        <div class="chat-user-name"><%= user.name %></div>
-                        <div class="chat-user-status text-xs text-muted">En línea</div>
-                    </div>
+    <div class="container fade-in">
+        <div class="chat-container">
+            <!-- Sidebar de usuarios -->
+            <div class="chat-sidebar">
+                <div class="chat-sidebar-header">
+                    <h3 class="chat-sidebar-title">💬 Conversaciones</h3>
                 </div>
-                <% }) %>
-            </div>
-        </div>
-        
-        <!-- Área principal del chat -->
-        <div class="chat-main">
-            <div class="chat-header">
-                <div class="flex items-center gap-md">
-                    <div class="chat-user-avatar" id="current-chat-avatar" style="display: none;">
-                        ?
-                    </div>
-                    <div>
-                        <h3 class="chat-header-title" id="chat-with">Selecciona una conversación</h3>
-                        <div class="text-sm text-secondary" id="chat-status">Elige un usuario para comenzar a chatear</div>
-                    </div>
+                <div class="chat-users-list" id="users-list">
+                    <% users.forEach(user=> { %>
+                        <div class="chat-user-item start-chat" data-userid="<%= user._id %>"
+                            data-username="<%= user.name %>">
+                            <div class="chat-user-avatar">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <div class="chat-user-info">
+                                <div class="chat-user-name">
+                                    <%= user.name %>
+                                </div>
+                                <div class="chat-user-status text-xs text-muted">En línea</div>
+                            </div>
+                        </div>
+                        <% }) %>
                 </div>
             </div>
-            
-            <div class="chat-messages" id="messages">
-                <div class="text-center text-muted" id="no-chat-selected">
-                    <div style="font-size: 48px; margin-bottom: 1rem;">💬</div>
-                    <h4>¡Comienza una conversación!</h4>
-                    <p>Selecciona un usuario de la lista para empezar a chatear</p>
+
+            <!-- Área principal del chat -->
+            <div class="chat-main" style="height: calc(100vh - 120px);">
+                <div class="chat-header">
+                    <div class="flex items-center gap-md">
+                        <div class="chat-user-avatar" id="current-chat-avatar" style="display: none;">
+                            ?
+                        </div>
+                        <div>
+                            <h3 class="chat-header-title" id="chat-with">Selecciona una conversación</h3>
+                            <div class="text-sm text-secondary" id="chat-status">Elige un usuario para comenzar a
+                                chatear</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="chat-input-container" id="chat-input-container" style="display: none;">
-                <form class="chat-input-form" id="message-form">
-                    <input type="hidden" id="receiver-id">
-                    <textarea 
-                        id="message-input" 
-                        class="chat-input" 
-                        placeholder="Escribe tu mensaje..." 
-                        rows="1"
-                        required
-                    ></textarea>
-                    <button type="submit" class="btn btn-primary chat-send-btn">
-                        📤
-                    </button>
-                </form>
+
+                <div class="chat-messages" id="messages">
+                    <div class="text-center text-muted" id="no-chat-selected">
+                        <div style="font-size: 48px; margin-bottom: 1rem;">💬</div>
+                        <h4>¡Comienza una conversación!</h4>
+                        <p>Selecciona un usuario de la lista para empezar a chatear</p>
+                    </div>
+                </div>
+
+                <div class="chat-input-container" id="chat-input-container" style="display: none;">
+                    <form class="chat-input-form" id="message-form">
+                        <input type="hidden" id="receiver-id">
+                        <textarea id="message-input" class="chat-input" placeholder="Escribe tu mensaje..." rows="1"
+                            required></textarea>
+                        <button type="submit" class="btn btn-primary chat-send-btn">
+                            📤
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<style>
-.chat-user-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.chat-user-name {
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.chat-user-status {
-    margin-top: 2px;
-}
-
-.chat-user-item:hover .chat-user-avatar {
-    transform: scale(1.05);
-}
-
-.chat-user-item.active .chat-user-avatar {
-    background: var(--text-white);
-    color: var(--primary-color);
-}
-
-#no-chat-selected {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    padding: var(--spacing-xl);
-}
-
-.chat-input {
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-md);
-    resize: none;
-    max-height: 120px;
-    min-height: 44px;
-    font-family: inherit;
-}
-
-.chat-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-.chat-send-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-}
-
-.chat-message-bubble {
-    word-wrap: break-word;
-    line-height: 1.4;
-}
-
-.typing-indicator {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-md);
-    color: var(--text-muted);
-    font-style: italic;
-}
-
-.typing-dots {
-    display: flex;
-    gap: 2px;
-}
-
-.typing-dot {
-    width: 4px;
-    height: 4px;
-    background: var(--text-muted);
-    border-radius: 50%;
-    animation: typing 1.4s infinite;
-}
-
-.typing-dot:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.typing-dot:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-@keyframes typing {
-    0%, 60%, 100% {
-        transform: translateY(0);
-    }
-    30% {
-        transform: translateY(-10px);
-    }
-}
-
-@media (max-width: 768px) {
-    .chat-container {
-        grid-template-columns: 1fr;
-        height: calc(100vh - 120px);
-    }
-    
-    .chat-sidebar {
-        display: none;
-    }
-    
-    .chat-sidebar.mobile-show {
-        display: flex;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1000;
-        background: var(--bg-card);
-    }
-}
-</style>
-
-<script src="/socket.io/socket.io.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Marcar navegación activa
-    const navChat = document.getElementById('nav-chat');
-    if (navChat) {
-        navChat.classList.add('active');
-    }
-
-    const socket = io();
-    let currentReceiverId = null;
-    let currentReceiverName = null;
-
-    // Elementos del DOM
-    const messagesContainer = document.getElementById('messages');
-    const messageForm = document.getElementById('message-form');
-    const messageInput = document.getElementById('message-input');
-    const receiverIdInput = document.getElementById('receiver-id');
-    const chatWithElement = document.getElementById('chat-with');
-    const chatStatusElement = document.getElementById('chat-status');
-    const chatInputContainer = document.getElementById('chat-input-container');
-    const noChatSelected = document.getElementById('no-chat-selected');
-    const currentChatAvatar = document.getElementById('current-chat-avatar');
-
-    // Seleccionar usuario para chatear
-    document.querySelectorAll('.start-chat').forEach(item => {
-        item.addEventListener('click', function () {
-            // Remover clase active de todos los usuarios
-            document.querySelectorAll('.chat-user-item').forEach(user => {
-                user.classList.remove('active');
-            });
-            
-            // Añadir clase active al usuario seleccionado
-            this.classList.add('active');
-            
-            const userId = this.getAttribute('data-userid');
-            const userName = this.getAttribute('data-username');
-
-            currentReceiverId = userId;
-            currentReceiverName = userName;
-            receiverIdInput.value = userId;
-            
-            // Actualizar header del chat
-            chatWithElement.textContent = userName;
-            chatStatusElement.textContent = 'En línea';
-            
-            // Mostrar avatar del usuario actual
-            currentChatAvatar.textContent = userName.charAt(0).toUpperCase();
-            currentChatAvatar.style.display = 'flex';
-            
-            // Mostrar área de input y ocultar mensaje de selección
-            chatInputContainer.style.display = 'block';
-            noChatSelected.style.display = 'none';
-
-            // Unirse a la sala de chat
-            socket.emit('join room', {
-                senderId: document.querySelector('meta[name="user-id"]').getAttribute('content'),
-                receiverId: userId
-            });
-
-            // Focus en el input de mensaje
-            messageInput.focus();
-        });
-    });
-
-    // Auto-resize del textarea
-    messageInput.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-    });
-
-    // Enviar mensaje con Enter (Shift+Enter para nueva línea)
-    messageInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            messageForm.dispatchEvent(new Event('submit'));
-        }
-    });
-
-    // Enviar mensaje
-    messageForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const message = messageInput.value.trim();
-        const receiverId = receiverIdInput.value;
-
-        if (message && receiverId) {
-            socket.emit('chat message', {
-                senderId: document.querySelector('meta[name="user-id"]').getAttribute('content'),
-                receiverId: receiverId,
-                content: message
-            });
-
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
-        }
-    });
-
-    // Recibir mensajes anteriores
-    socket.on('previous messages', function (messages) {
-        messagesContainer.innerHTML = '';
-
-        if (messages.length === 0) {
-            messagesContainer.innerHTML = `
-                <div class="text-center text-muted" style="padding: 2rem;">
-                    <div style="font-size: 32px; margin-bottom: 1rem;">👋</div>
-                    <p>¡Comienza la conversación con ${currentReceiverName}!</p>
-                </div>
-            `;
-        } else {
-            messages.forEach(msg => {
-                addMessageToChat(msg);
-            });
+    <style>
+        .chat-user-info {
+            flex: 1;
+            min-width: 0;
         }
 
-        // Scroll al final
-        scrollToBottom();
-    });
-
-    // Recibir nuevos mensajes
-    socket.on('chat message', function (message) {
-        const currentUserId = document.querySelector('meta[name="user-id"]').getAttribute('content');
-
-        // Mostrar el mensaje si es parte de la conversación actual
-        if ((message.sender._id === currentUserId && message.receiver._id === currentReceiverId) ||
-            (message.sender._id === currentReceiverId && message.receiver._id === currentUserId)) {
-            
-            addMessageToChat(message);
-            scrollToBottom();
+        .chat-user-name {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-    });
 
-    // Función para añadir mensaje al chat
-    function addMessageToChat(message) {
-        const currentUserId = document.querySelector('meta[name="user-id"]').getAttribute('content');
-        const isOwnMessage = message.sender._id === currentUserId;
+        .chat-user-status {
+            margin-top: 2px;
+        }
 
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('chat-message');
-        messageDiv.classList.add(isOwnMessage ? 'sent' : 'received');
+        .chat-user-item:hover .chat-user-avatar {
+            transform: scale(1.05);
+        }
 
-        const messageTime = new Date(message.createdAt).toLocaleTimeString('es-ES', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        .chat-user-item.active .chat-user-avatar {
+            background: var(--text-white);
+            color: var(--primary-color);
+        }
 
-        messageDiv.innerHTML = `
+        #no-chat-selected {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: var(--spacing-xl);
+        }
+
+        .chat-input {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            resize: none;
+            max-height: 120px;
+            min-height: 44px;
+            font-family: inherit;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .chat-send-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .chat-message-bubble {
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 2px;
+        }
+
+        .typing-dot {
+            width: 4px;
+            height: 4px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                grid-template-columns: 1fr;
+                height: calc(100vh - 120px);
+            }
+
+            .chat-sidebar {
+                display: none;
+            }
+
+            .chat-sidebar.mobile-show {
+                display: flex;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1000;
+                background: var(--bg-card);
+            }
+
+            .chat-main {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            .chat-messages {
+                flex: 1;
+                overflow-y: auto;
+                padding: var(--spacing-md);
+            }
+
+        }
+    </style>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Marcar navegación activa
+            const navChat = document.getElementById('nav-chat');
+            if (navChat) {
+                navChat.classList.add('active');
+            }
+
+            const socket = io();
+            let currentReceiverId = null;
+            let currentReceiverName = null;
+
+            // Elementos del DOM
+            const messagesContainer = document.getElementById('messages');
+            const messageForm = document.getElementById('message-form');
+            const messageInput = document.getElementById('message-input');
+            const receiverIdInput = document.getElementById('receiver-id');
+            const chatWithElement = document.getElementById('chat-with');
+            const chatStatusElement = document.getElementById('chat-status');
+            const chatInputContainer = document.getElementById('chat-input-container');
+            const noChatSelected = document.getElementById('no-chat-selected');
+            const currentChatAvatar = document.getElementById('current-chat-avatar');
+
+            // Seleccionar usuario para chatear
+            document.querySelectorAll('.start-chat').forEach(item => {
+                item.addEventListener('click', function () {
+                    // Remover clase active de todos los usuarios
+                    document.querySelectorAll('.chat-user-item').forEach(user => {
+                        user.classList.remove('active');
+                    });
+
+                    // Añadir clase active al usuario seleccionado
+                    this.classList.add('active');
+
+                    const userId = this.getAttribute('data-userid');
+                    const userName = this.getAttribute('data-username');
+
+                    currentReceiverId = userId;
+                    currentReceiverName = userName;
+                    receiverIdInput.value = userId;
+
+                    // Actualizar header del chat
+                    chatWithElement.textContent = userName;
+                    chatStatusElement.textContent = 'En línea';
+
+                    // Mostrar avatar del usuario actual
+                    currentChatAvatar.textContent = userName.charAt(0).toUpperCase();
+                    currentChatAvatar.style.display = 'flex';
+
+                    // Mostrar área de input y ocultar mensaje de selección
+                    chatInputContainer.style.display = 'block';
+                    noChatSelected.style.display = 'none';
+
+                    // Unirse a la sala de chat
+                    socket.emit('join room', {
+                        senderId: document.querySelector('meta[name="user-id"]').getAttribute('content'),
+                        receiverId: userId
+                    });
+
+                    // Focus en el input de mensaje
+                    messageInput.focus();
+                });
+            });
+
+            // Auto-resize del textarea
+            messageInput.addEventListener('input', function () {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            });
+
+            // Enviar mensaje con Enter (Shift+Enter para nueva línea)
+            messageInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    messageForm.dispatchEvent(new Event('submit'));
+                }
+            });
+
+            // Enviar mensaje
+            messageForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const message = messageInput.value.trim();
+                const receiverId = receiverIdInput.value;
+
+                if (message && receiverId) {
+                    socket.emit('chat message', {
+                        senderId: document.querySelector('meta[name="user-id"]').getAttribute('content'),
+                        receiverId: receiverId,
+                        content: message
+                    });
+
+                    messageInput.value = '';
+                    messageInput.style.height = 'auto';
+                }
+            });
+
+            socket.on('previous messages', function (messages) {
+                messagesContainer.innerHTML = '';
+
+                if (messages.length === 0) {
+                    messagesContainer.innerHTML = `
+            <div class="text-center text-muted" style="padding: 2rem;">
+                <div style="font-size: 32px; margin-bottom: 1rem;">👋</div>
+                <p>¡Comienza la conversación con ${currentReceiverName}!</p>
+            </div>
+        `;
+                } else {
+                    messages.forEach(msg => {
+                        addMessageToChat(msg);
+                    });
+                }
+
+                // Asegurar visibilidad correcta (por si se pierde)
+                chatInputContainer.style.display = 'block';
+                currentChatAvatar.style.display = 'flex';
+                noChatSelected.style.display = 'none';
+
+                scrollToBottom();
+            });
+
+
+            // Recibir nuevos mensajes
+            socket.on('chat message', function (message) {
+                const currentUserId = document.querySelector('meta[name="user-id"]').getAttribute('content');
+
+                // Mostrar el mensaje si es parte de la conversación actual
+                if ((message.sender._id === currentUserId && message.receiver._id === currentReceiverId) ||
+                    (message.sender._id === currentReceiverId && message.receiver._id === currentUserId)) {
+
+                    addMessageToChat(message);
+                    scrollToBottom();
+                }
+            });
+
+            // Función para añadir mensaje al chat
+            function addMessageToChat(message) {
+                const currentUserId = document.querySelector('meta[name="user-id"]').getAttribute('content');
+                const isOwnMessage = message.sender._id === currentUserId;
+
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('chat-message');
+                messageDiv.classList.add(isOwnMessage ? 'sent' : 'received');
+
+                const messageTime = new Date(message.createdAt).toLocaleTimeString('es-ES', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                messageDiv.innerHTML = `
             <div class="chat-message-bubble">
                 ${!isOwnMessage ? `<div class="chat-message-sender">${message.sender.name}</div>` : ''}
                 <div class="chat-message-content">${escapeHtml(message.content)}</div>
@@ -347,49 +367,49 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         `;
 
-        messagesContainer.appendChild(messageDiv);
-    }
+                messagesContainer.appendChild(messageDiv);
+            }
 
-    // Función para hacer scroll al final
-    function scrollToBottom() {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
+            // Función para hacer scroll al final
+            function scrollToBottom() {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
 
-    // Función para escapar HTML
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+            // Función para escapar HTML
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
 
-    // Manejar conexión/desconexión
-    socket.on('connect', function() {
-        console.log('Conectado al chat');
-    });
-
-    socket.on('disconnect', function() {
-        console.log('Desconectado del chat');
-        chatStatusElement.textContent = 'Desconectado';
-    });
-
-    // Indicador de escritura (funcionalidad futura)
-    let typingTimer;
-    messageInput.addEventListener('input', function() {
-        if (currentReceiverId) {
-            socket.emit('typing', {
-                senderId: document.querySelector('meta[name="user-id"]').getAttribute('content'),
-                receiverId: currentReceiverId
+            // Manejar conexión/desconexión
+            socket.on('connect', function () {
+                console.log('Conectado al chat');
             });
-            
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(() => {
-                socket.emit('stop typing', {
-                    senderId: document.querySelector('meta[name="user-id"]').getAttribute('content'),
-                    receiverId: currentReceiverId
-                });
-            }, 1000);
-        }
-    });
-});
-</script>
-<%- include('../partials/footer') %>
+
+            socket.on('disconnect', function () {
+                console.log('Desconectado del chat');
+                chatStatusElement.textContent = 'Desconectado';
+            });
+
+            // Indicador de escritura (funcionalidad futura)
+            let typingTimer;
+            messageInput.addEventListener('input', function () {
+                if (currentReceiverId) {
+                    socket.emit('typing', {
+                        senderId: document.querySelector('meta[name="user-id"]').getAttribute('content'),
+                        receiverId: currentReceiverId
+                    });
+
+                    clearTimeout(typingTimer);
+                    typingTimer = setTimeout(() => {
+                        socket.emit('stop typing', {
+                            senderId: document.querySelector('meta[name="user-id"]').getAttribute('content'),
+                            receiverId: currentReceiverId
+                        });
+                    }, 1000);
+                }
+            });
+        });
+    </script>
+    <%- include('../partials/footer') %>
