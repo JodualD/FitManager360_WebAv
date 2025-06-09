@@ -234,17 +234,22 @@ body {
 }
 
 .btn-secondary {
-  background: var(--bg-primary);
+  background: #f8fafc;
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   font-size: 16px;
   padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-md); /* Bordes redondeados suaves */
+  font-family: 'Inter', sans-serif;
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--border-color);
+  background: var(--border-color); /* Ligero contraste al hacer hover */
   transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
+
 
 .btn-success {
   background: var(--success-color);
@@ -286,12 +291,12 @@ body {
 /* Botón de búsqueda */
 .btn-outline-secondary {
   background: var(--primary-color);
-  border-color: var(--primary-color);
   color: var(--text-white);
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
-  border-left: none;
-  padding: var(--spacing-md) var(--spacing-lg);
-  min-width: 50px;
+  font-size: 16px;
+  padding: var(--spacing-md) var(--spacing-xl);
+  margin: 12px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  cursor: pointer;
 }
 
 .btn-outline-secondary:hover,
@@ -299,26 +304,11 @@ body {
   background: var(--primary-dark);
   border-color: var(--primary-dark);
   color: var(--text-white);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-/* Botón secundario para limpiar */
-.btn-secondary {
-  background: linear-gradient(135deg, var(--text-secondary) 0%, #0c4fac 100%);
-  border-color: var(--text-secondary);
-  color: var(--text-white);
-  box-shadow: var(--shadow-sm);
-}
-
-.btn-secondary:hover,
-.btn-secondary:focus {
-  background: linear-gradient(135deg, var(--primary-dark) 0%, #2657dc 100%);
-  border-color: var(--danger-color);
-  color: var(--text-white);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  outline: none;
 }
+
 .btn-lg {
   padding: var(--spacing-md) var(--spacing-xl);
   font-size: 16px;
@@ -347,6 +337,7 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
+  margin-bottom: 12px;
 }
 
 /* Efectos hover para las columnas */
@@ -383,7 +374,8 @@ body {
   margin-bottom: var(--spacing-sm);
   font-weight: 500;
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: 0.9rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .form-control {
@@ -412,18 +404,30 @@ body {
 }
 
 .form-select {
-  background-position: right 0.5rem center;
+  appearance: none;
+  background-color: var(--bg-card);
+  background-image: url("data:image/svg+xml,%3Csvg fill='none' stroke='currentColor' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-position: right 0.75rem center;
   background-repeat: no-repeat;
-  background-size: 1.5em 1.5em;
-  padding-right: 2.5rem;
+  background-size: 1.25em 1.25em;
+  padding: 0.6rem 2.5rem 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-width: 200px;
 }
+
 .form-select:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  outline: none;
   background-color: var(--bg-card);
   color: var(--text-primary);
-  transform: translateY(-1px);
 }
+
 
 .form-select option {
   background: var(--bg-card);
@@ -780,6 +784,7 @@ body {
   color: var(--text-secondary);
   font-size: 14px;
   font-weight: 500;
+  margin-bottom: 12px;
 }
 
 /* Routine Styles */

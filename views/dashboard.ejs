@@ -71,7 +71,7 @@
       <!-- Botón para ver las rutinas -->
       <a
         href="/routines"
-        class="btn btn-primary btn-sm"
+        class="btn btn-success btn-sm"
         >Ver Rutinas</a
       >
     </div>
@@ -140,8 +140,7 @@
               class="btn btn-outline-secondary"
               type="button"
               id="searchButton"
-            >
-              <i class="fas fa-search">Buscar</i>
+            >Buscar
             </button>
           </div>
         </div>
@@ -186,10 +185,9 @@
         <div class="col-md-2">
           <label class="form-label">&nbsp;</label>
           <button
-            class="btn btn-secondary w-100 d-block"
+            class="btn btn-primary"
             id="clearFilters"
-          >
-            <i class="fas fa-eraser me-1"></i>Limpiar
+          > Limpiar
           </button>
         </div>
       </div>
@@ -316,20 +314,20 @@
               <!-- Botón Ver -->
               <a
                 href="/routines/<%= routine._id %>"
-                class="btn btn-outline-primary btn-sm"
+                class="btn btn-secondary"
               >
                 <i class="fas fa-eye me-1"></i>Ver
               </a>
               <!-- Botón Editar -->
               <a
                 href="/routines/<%= routine._id %>/edit"
-                class="btn btn-outline-secondary btn-sm"
+                class="btn btn-outline-secondary btn-lg"
               >
                 <i class="fas fa-edit me-1"></i>Editar
               </a>
               <!-- Botón Completar -->
               <button
-                class="btn btn-success btn-sm complete-routine-btn"
+                class="btn btn-success complete-routine-btn"
                 data-id="<%= routine._id %>"
               >
                 <i class="fas fa-check me-1"></i>Completar
