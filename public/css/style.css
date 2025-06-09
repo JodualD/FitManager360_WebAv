@@ -250,7 +250,6 @@ body {
   box-shadow: var(--shadow-md);
 }
 
-
 .btn-success {
   background: var(--success-color);
   padding: var(--spacing-md) var(--spacing-xl);
@@ -288,6 +287,13 @@ body {
   background: #ea580c;
   transform: translateY(-1px);
 }
+
+.btndashboard {
+  background-color: #7a7df3 !important; /* verde */
+  color: white !important;
+  border: none;
+}
+
 /* Botón de búsqueda */
 .btn-outline-secondary {
   background: var(--primary-color);
@@ -295,7 +301,8 @@ body {
   font-size: 16px;
   padding: var(--spacing-md) var(--spacing-xl);
   margin: 12px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    sans-serif;
   cursor: pointer;
 }
 
@@ -318,6 +325,15 @@ body {
   padding: var(--spacing-xs) var(--spacing-md);
   font-size: 14px;
   padding: 0.6rem 1.2rem;
+}
+
+.btn-dg {
+  padding: 0.76rem 1.2rem;
+  font-size: 14px;
+}
+
+.btn-com {
+  padding: 1.2rem 1.5rem;
 }
 
 .btn-icon {
@@ -375,7 +391,8 @@ body {
   font-weight: 500;
   color: var(--text-primary);
   font-size: 0.9rem;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    sans-serif;
 }
 
 .form-control {
@@ -412,7 +429,8 @@ body {
   background-size: 1.25em 1.25em;
   padding: 0.6rem 2.5rem 0.6rem 1rem;
   font-size: 0.9rem;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    sans-serif;
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   border-radius: 10px;
@@ -427,7 +445,6 @@ body {
   background-color: var(--bg-card);
   color: var(--text-primary);
 }
-
 
 .form-select option {
   background: var(--bg-card);
@@ -784,6 +801,10 @@ body {
   color: var(--text-secondary);
   font-size: 14px;
   font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.pieDashboard > div {
   margin-bottom: 12px;
 }
 
@@ -1266,7 +1287,6 @@ body {
 .fade-in {
   animation: fadeIn 0.3s ease-in;
 }
-
 
 @keyframes fadeIn {
   from {

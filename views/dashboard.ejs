@@ -38,14 +38,14 @@
       <!-- Botón para crear nueva rutina -->
       <a
         href="/routines/new"
-        class="btn btn-primary btn-lg"
+        class="btn btn-primary btn-lg btndashboard"
       >
         <i class="fas fa-plus me-2"></i>Nueva Rutina
       </a>
       <!-- Botón para ver lista de rutinas -->
       <a
         href="/routines"
-        class="btn btn-outline-secondary btn-lg ms-2"
+        class="btn btn-outline-secondary btn-lg btndashboard"
       >
         <i class="fas fa-list me-2"></i>Ver Lista
       </a>
@@ -140,7 +140,8 @@
               class="btn btn-outline-secondary"
               type="button"
               id="searchButton"
-            >Buscar
+            >
+              Buscar
             </button>
           </div>
         </div>
@@ -187,7 +188,8 @@
           <button
             class="btn btn-primary"
             id="clearFilters"
-          > Limpiar
+          >
+            Limpiar
           </button>
         </div>
       </div>
@@ -200,18 +202,19 @@
       <!-- Condición: Si no hay rutinas, muestra mensaje vacío -->
       <% if (!routines || routines.length === 0) { %>
       <div class="col-12">
-        <div class="text-center py-5">
-          <i class="fas fa-dumbbell fa-4x text-muted mb-3"></i>
-          <h3 class="text-muted">No tienes rutinas creadas</h3>
-          <p class="text-muted">
-            ¡Crea tu primera rutina para comenzar a entrenar!
-          </p>
+        <div class="text-center py-5 pieDashboard">
+          <div><i class="fas fa-dumbbell fa-4x text-muted mb-3"></i></div>
+          <div><h3 class="text-muted">No tienes rutinas creadas</h3></div>
+          <div>
+            <p class="text-muted">
+              ¡Crea tu primera rutina para comenzar a entrenar!
+            </p>
+          </div>
           <!-- Botón para crear primera rutina -->
           <a
             href="/routines/new"
-            class="btn btn-primary btn-lg"
-          >
-            <i class="fas fa-plus me-2"></i>Crear Primera Rutina
+            class="btn btn-success btn-lg"
+            >Crear Primera Rutina
           </a>
         </div>
       </div>
@@ -327,7 +330,7 @@
               </a>
               <!-- Botón Completar -->
               <button
-                class="btn btn-success complete-routine-btn"
+                class="btn btn-success complete-routine-btn btn-com"
                 data-id="<%= routine._id %>"
               >
                 <i class="fas fa-check me-1"></i>Completar

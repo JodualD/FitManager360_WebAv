@@ -1,118 +1,163 @@
 <%- include('../partials/header', { title: 'Mis Rutinas' }) %>
 <div class="container fade-in">
-    <div class="routine-header">
-        <div>
-            <h1 class="routine-title">Mis Rutinas</h1>
-            <p class="text-secondary">Gestiona y organiza tus entrenamientos</p>
-        </div>
-        <a href="/routines/new" class="btn btn-success btn-lg" id="new-routine-btn">
-            Nueva Rutina
-        </a>
+  <div class="routine-header">
+    <div>
+      <h1 class="routine-title">Mis Rutinas</h1>
+      <p class="text-secondary">Gestiona y organiza tus entrenamientos</p>
     </div>
+    <a
+      href="/routines/new"
+      class="btn btn-success btn-lg"
+      id="new-routine-btn"
+    >
+      Nueva Rutina
+    </a>
+  </div>
 
-    <% if (routines.length === 0) { %>
-    <div class="card text-center" id="empty-state">
-        <div class="card-body">
-            <div class="mb-lg">
-                <div style="font-size: 64px; margin-bottom: 1rem;">🏋️‍♂️</div>
-                <h3 class="text-2xl font-semibold mb-md">¡Comienza tu viaje fitness!</h3>
-                <p class="text-secondary">No tienes rutinas creadas aún. Crea tu primera rutina para empezar a entrenar.</p>
-            </div>
-            <a href="/routines/new" class="btn btn-primary btn-lg">
-                Crear Mi Primera Rutina
-            </a>
-        </div>
+  <% if (routines.length === 0) { %>
+  <div
+    class="card text-center"
+    id="empty-state"
+  >
+    <div class="card-body">
+      <div class="mb-lg">
+        <div style="font-size: 64px; margin-bottom: 1rem">🏋️‍♂️</div>
+        <h3 class="text-2xl font-semibold mb-md">
+          ¡Comienza tu viaje fitness!
+        </h3>
+        <p class="text-secondary">
+          No tienes rutinas creadas aún. Crea tu primera rutina para empezar a
+          entrenar.
+        </p>
+      </div>
+      <a
+        href="/routines/new"
+        class="btn btn-primary btn-lg"
+      >
+        Crear Mi Primera Rutina
+      </a>
     </div>
-    <% } else { %>
-    <div class="routine-grid" id="routines-container">
-        <% routines.forEach((routine, index) => { %>
-        <div class="routine-card slide-up" style="animation-delay: <%= index * 0.1 %>s;" data-routine-id="<%= routine._id %>">
-            <div class="routine-card-header">
-                <h3 class="routine-card-title"><%= routine.title %></h3>
-                <div class="routine-card-meta">
-                    <span>🎯 <%= routine.difficulty %></span>
-                    <span>💪 <%= routine.exercises.length %> Ejercicios</span>
-                </div>
-            </div>
-            
-            <div class="routine-card-body">
-                <p class="routine-description"><%= routine.description %></p>
-                
-                <div class="routine-stats">
-                    <div class="routine-stat">
-                        <div class="routine-stat-value"><%= routine.exercises.length %></div>
-                        <div class="routine-stat-label">Ejercicios</div>
-                    </div>
-                    <div class="routine-stat">
-                        <div class="routine-stat-value">
-                            <%= routine.exercises.reduce((total, ex) => total + (ex.sets || 0), 0) %>
-                        </div>
-                        <div class="routine-stat-label">Series Total</div>
-                    </div>
-                    <div class="routine-stat">
-                        <div class="routine-stat-value">
-                            <%= Math.round(routine.exercises.reduce((total, ex) => total + ((ex.rest || 0) * (ex.sets || 0)), 0) / 60) %>
-                        </div>
-                        <div class="routine-stat-label">Min. Aprox</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="routine-actions">
-                <a href="/routines/<%= routine._id %>" class="btn btn-secondary btn-sm">
-                    Ver
-                </a>
-                <a href="/routines/<%= routine._id %>/edit" class="btn btn-primary btn-sm">
-                    Editar
-                </a>
-                <form action="/routines/<%= routine._id %>?_method=DELETE" method="POST" style="display: inline;" class="delete-form">
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar esta rutina?')">
-                        Eliminar
-                    </button>
-                </form>
-            </div>
+  </div>
+  <% } else { %>
+  <div
+    class="routine-grid"
+    id="routines-container"
+  >
+    <% routines.forEach((routine, index) => { %>
+    <div
+      class="routine-card slide-up"
+      style="animation-delay: <%= index * 0.1 %>s"
+      data-routine-id="<%= routine._id %>"
+    >
+      <div class="routine-card-header">
+        <h3 class="routine-card-title"><%= routine.title %></h3>
+        <div class="routine-card-meta">
+          <span>🎯 <%= routine.difficulty %></span>
+          <span>💪 <%= routine.exercises.length %> Ejercicios</span>
         </div>
-        <% }) %>
+      </div>
+
+      <div class="routine-card-body">
+        <p class="routine-description"><%= routine.description %></p>
+
+        <div class="routine-stats">
+          <div class="routine-stat">
+            <div class="routine-stat-value">
+              <%= routine.exercises.length %>
+            </div>
+            <div class="routine-stat-label">Ejercicios</div>
+          </div>
+          <div class="routine-stat">
+            <div class="routine-stat-value">
+              <%= routine.exercises.reduce((total, ex) => total + (ex.sets ||
+              0), 0) %>
+            </div>
+            <div class="routine-stat-label">Series Total</div>
+          </div>
+          <div class="routine-stat">
+            <div class="routine-stat-value">
+              <%= Math.round(routine.exercises.reduce((total, ex) => total +
+              ((ex.rest || 0) * (ex.sets || 0)), 0) / 60) %>
+            </div>
+            <div class="routine-stat-label">Min. Aprox</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="routine-actions">
+        <a
+          href="/routines/<%= routine._id %>"
+          class="btn btn-secondary btn-sm"
+        >
+          Ver
+        </a>
+        <a
+          href="/routines/<%= routine._id %>/edit"
+          class="btn btn-primary btn-sm"
+        >
+          Editar
+        </a>
+        <form
+          action="/routines/<%= routine._id %>?_method=DELETE"
+          method="POST"
+          style="display: inline"
+          class="delete-form"
+        >
+          <button
+            type="submit"
+            class="btn btn-danger btn-dg"
+            onclick="return confirm('¿Estás seguro de que quieres eliminar esta rutina?')"
+          >
+            Eliminar
+          </button>
+        </form>
+      </div>
     </div>
-    <% } %>
+    <% }) %>
+  </div>
+  <% } %>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     // Marcar navegación activa
     const navRoutines = document.getElementById('nav-routines');
     if (navRoutines) {
-        navRoutines.classList.add('active');
+      navRoutines.classList.add('active');
     }
 
     // Confirmar eliminación de rutinas
     const deleteForms = document.querySelectorAll('.delete-form');
-    deleteForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (confirm('⚠️ ¿Estás seguro de que quieres eliminar esta rutina? Esta acción no se puede deshacer.')) {
-                this.submit();
-            }
-        });
+    deleteForms.forEach((form) => {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (
+          confirm(
+            '⚠️ ¿Estás seguro de que quieres eliminar esta rutina? Esta acción no se puede deshacer.'
+          )
+        ) {
+          this.submit();
+        }
+      });
     });
 
     // Animación de entrada para las tarjetas
     const routineCards = document.querySelectorAll('.routine-card');
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
     });
 
-    routineCards.forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'all 0.3s ease';
-        observer.observe(card);
+    routineCards.forEach((card) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = 'all 0.3s ease';
+      observer.observe(card);
     });
-});
+  });
 </script>
 <%- include('../partials/footer') %>
