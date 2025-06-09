@@ -149,11 +149,6 @@ body {
 }
 
 /* Container Styles */
-.container.fade-in {
-  height: calc(100vh - 80px);
-  display: flex;
-  flex-direction: column;
-}
 
 .container {
   max-width: 1200px;
@@ -980,11 +975,18 @@ body {
 }
 
 /* Chat Styles */
+.container.chat-page {
+  height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 16px;
+}
+
 .chat-container {
+  flex: 1;
   display: grid;
   grid-template-columns: 300px 1fr;
   gap: var(--spacing-lg);
-  height: auto;
   background: var(--bg-card);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
@@ -1259,6 +1261,7 @@ body {
 .fade-in {
   animation: fadeIn 0.3s ease-in;
 }
+
 
 @keyframes fadeIn {
   from {
